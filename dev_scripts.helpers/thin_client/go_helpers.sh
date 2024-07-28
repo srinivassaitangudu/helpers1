@@ -13,8 +13,10 @@
 
 # set -x
 
-# Note that we don't use utils.sh here since we don't know where the repo is.
+SCRIPT_PATH="dev_scripts.helpers/thin_client/go_helpers.sh"
+echo "##> $SCRIPT_PATH"
 
+# Note that we don't use `utils.sh` here since we don't know where the repo is.
 DIR_PREFIX="helpers"
 echo "DIR_PREFIX=$DIR_PREFIX"
 
@@ -48,10 +50,6 @@ fi
 
 # Create a new session.
 echo "The tmux session doesn't exists, creating it"
-if [[ ! -d $GIT_ROOT_DIR ]]; then
-    echo "Can't find dir $GIT_ROOT_DIR"
-    exit -1
-fi;
 FILE="${THIN_CLIENT_DIR}/tmux.${DIR_PREFIX}.sh $IDX"
 echo "Executing $GIT_ROOT_DIR/$FILE ..."
 cd $GIT_ROOT_DIR

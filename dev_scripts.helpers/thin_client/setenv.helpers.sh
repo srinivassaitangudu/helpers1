@@ -5,31 +5,36 @@
 # use bash and doesn't have +x permissions.
 # 
 
+SCRIPT_PATH="dev_scripts.helpers/thin_client/setenv.helpers.sh"
+echo "##> $SCRIPT_PATH"
+
 # NOTE: Since we are sourcing the file and thus we don't have the path for the
 # current script.
 DIR_PREFIX="helpers"
 UTILS_PATH=$(pwd)/dev_scripts.${DIR_PREFIX}/thin_client/utils.sh
 source $UTILS_PATH
 
-# We need to overwrite the functions to use `return` instead of `exit`.
+dassert_is_sourced
 
-# Function to check if a directory exists.
-check_dir_exists() {
-    local dir_path="$1"
-    if [[ ! -d "$dir_path" ]]; then
-        echo -e "${ERROR}: Directory '$dir_path' does not exist."
-        return -1
-    fi
-}
-
-# Function to check if a filename exists.
-check_file_exists() {
-    local file_name="$1"
-    if [[ ! -f "$file_name" ]]; then
-        echo -e "${ERROR}: File '$file_name' does not exist."
-        return -1
-    fi
-}
+## We need to overwrite the functions to use `return` instead of `exit`.
+#
+## Function to check if a directory exists.
+#check_dir_exists() {
+#    local dir_path="$1"
+#    if [[ ! -d "$dir_path" ]]; then
+#        echo -e "${ERROR}: Directory '$dir_path' does not exist."
+#        return -1
+#    fi
+#}
+#
+## Function to check if a filename exists.
+#check_file_exists() {
+#    local file_name="$1"
+#    if [[ ! -f "$file_name" ]]; then
+#        echo -e "${ERROR}: File '$file_name' does not exist."
+#        return -1
+#    fi
+#}
 
 # Give permissions to read / write to user and group.
 umask 002
@@ -54,8 +59,7 @@ echo "# Activate virtual env '$ACTIVATE_SCRIPT'"
 check_file_exists $ACTIVATE_SCRIPT
 source $ACTIVATE_SCRIPT
 
-echo "which python="$(which python 2>&1)
-echo "python -v="$(python --version)
+print_python_ver
 
 # #############################################################################
 # PATH
@@ -69,9 +73,9 @@ export PATH=$GIT_ROOT_DIR:$PATH
 export PATH="$(find $DEV_SCRIPT_DIR -maxdepth 1 -type d -not -path "$(pwd)" | tr '\n' ':' | sed 's/:$//'):$PATH"
 
 # Remove duplicates.
-#export PATH=$(echo $PATH | perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, scalar <>))')
 export PATH=$(remove_dups $PATH)
 
+# Print.
 echo "PATH="
 echo_on_different_lines $PATH
 
@@ -83,18 +87,18 @@ echo "# Set PYTHONPATH"
 export PYTHONPATH=$PWD:$PYTHONPATH
 
 # Remove duplicates.
-export PYTHONPATH=$(echo $PYTHONPATH | perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, scalar <>))')
+export PYTHONPATH=$(remove_dups $PYTHONPATH)
 
-# Print on different lines.
+# Print.
 echo "PYTHONPATH="
-echo $PYTHONPATH | perl -e 'print join("\n", grep { not $seen{$_}++ } split(/:/, scalar <>))'
+echo_on_different_lines $PYTHONPATH
 
 # #############################################################################
 # Configure environment
 # #############################################################################
 
-SCRIPT_PATH="${THIN_CLIENT_DIR}/setenv.${DIR_PREFIX}.configure_env.sh"
-check_file_exists $SCRIPT_PATH
-source $SCRIPT_PATH
+SCRIPT_PATH2="${THIN_CLIENT_DIR}/setenv.${DIR_PREFIX}.configure_env.sh"
+check_file_exists $SCRIPT_PATH2
+source $SCRIPT_PATH2
 
-echo -e "${INFO}: setenv successful" 
+echo -e "${INFO}: ${SCRIPT_PATH} successful"

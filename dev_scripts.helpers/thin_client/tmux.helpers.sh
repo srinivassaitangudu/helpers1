@@ -8,6 +8,7 @@
 
 echo "##> dev_scripts.helpers/tmux.helpers.sh"
 
+# Note that we don't use `utils.sh` here since we don't know where the repo is.
 #set -x
 
 DIR_PREFIX="helpers"

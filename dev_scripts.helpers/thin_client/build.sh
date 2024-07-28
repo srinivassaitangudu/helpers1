@@ -3,21 +3,16 @@
 # Build a thin virtual environment to run workflows on the dev machine.
 #
 
-# TODO(gp): Use python 3.9 and keep this in sync with
-# devops/docker_build/pyproject.toml
-
 set -e
+
+SCRIPT_PATH="dev_scripts.helpers/thin_client/build.sh"
+echo "##> $SCRIPT_PATH"
 
 source $(dirname "$0")/utils.sh
 
-echo $(remove_dups $PATH)
+#dassert_is_executed
 
-exit -1
-
-echo "which python="$(which python 2>&1)
-echo "python -v="$(python --version 2>&1)
-echo "which python3="$(which python3)
-echo "python3 -v="$(python3 --version)
+print_python_ver()
 
 # Check if AWS CLI V2 is already installed.
 if command -v aws &>/dev/null; then
@@ -50,15 +45,7 @@ fi;
 python3 -m pip install --upgrade pip
 pip3 install -r ${THIN_CLIENT_DIR}/tmp.requirements.txt
 
-# Print package versions.
-INVOKE_VER=$(invoke --version)
-echo "# invoke=${INVOKE_VER}"
-POETRY_VER=$(poetry --version)
-echo "# poetry=${POETRY_VER}"
-DOCKER_COMPOSE_VER=$(docker-compose --version)
-echo "# docker-compose=${DOCKER_COMPOSE_VER}"
-DOCKER_VER=$(docker --version)
-echo "# docker=${DOCKER_VER}"
+print_pip_package_ver
 
 # Handle MacOS specific packages.
 if [[ $(uname) == "Darwin" ]]; then
@@ -78,4 +65,4 @@ if [[ $(uname) == "Darwin" ]]; then
     #echo "dive version="$(dive --version)
 fi;
 
-echo -e "${INFO}: Building thin client successful"
+echo -e "${INFO}: ${SCRIPT_PATH} successful"

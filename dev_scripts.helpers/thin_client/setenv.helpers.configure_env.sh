@@ -2,7 +2,8 @@
 # Configure environment specific to this project.
 #
 
-echo "# Configure env"
+SCRIPT_PATH2="dev_scripts.helpers/thin_client/setenv.helpers.configure_env.sh"
+echo "##> $SCRIPT_PATH2"
 
 # AWS profiles which are propagated to Docker.
 export CK_AWS_PROFILE="ck"
@@ -32,3 +33,5 @@ alias
 
 # Add autocomplete for `invoke`.
 #source $AMP/dev_scripts/invoke_completion.sh
+
+echo -e "${INFO}: ${SCRIPT_PATH2} successful"
