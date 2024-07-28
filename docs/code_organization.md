@@ -3,22 +3,20 @@ LICENSE
 invoke.yaml
 conftest.py
 
+## Thin environment
 
-# 
-dev_scripts.helpers/go_helpers.sh
-
+```
+> ls -1 dev_scripts.helpers/thin_client/
+build.sh
 go_helpers.sh
+requirements.txt
 setenv.helpers.configure_env.sh
 setenv.helpers.sh
+tmp.requirements.txt
 tmux.helpers.sh
-
-
-```bash
-> DIR_NAME="helpers"
-> ln -sf $(pwd)/dev_scripts.${DIR_NAME}/go_${DIR_NAME}.sh ~/go_${DIRNAME}.sh
+utils.sh
 ```
 
-E.g.,
-```
-> ln -sf /Users/saggese/src/helpers1/dev_scripts.helpers/go_helpers.sh ~/go_helpers.sh
-```
+repo_config.py:
+
+tasks.py

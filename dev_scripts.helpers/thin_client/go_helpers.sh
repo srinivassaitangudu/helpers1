@@ -5,8 +5,12 @@
 # 
 # Create a global link with:
 # ```
+# > DIR_NAME="helpers"
+# > ln -sf $(pwd)/dev_scripts.${DIR_NAME}/go_${DIR_NAME}.sh ~/go_${DIR_NAME}.sh
+#
 # > cd $HOME/src/helpers1
 # > ls -l $(pwd)/dev_scripts.helpers/thin_client/go_helpers.sh
+#
 # > ln -sf $(pwd)/dev_scripts.helpers/thin_client/go_helpers.sh ~/go_helpers.sh
 # > ls -l ~/go_helpers.sh
 # ```

@@ -2,12 +2,15 @@
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
 GREEN='\033[0;32m'
-NC='\033[0m' # No Color
+# No color.
+NC='\033[0m'
+
 INFO="${GREEN}INFO${NC}"
 WARNING="${YELLOW}WARNING${NC}"
 ERROR="${RED}ERROR${NC}"
 
-echo -e $NC
+echo -e -n $NC
+
 
 is_sourced() {
     # Function to check if the script is being sourced.
@@ -105,7 +108,8 @@ print_pip_package_ver() {
     DOCKER_VER=$(docker --version)
     echo "# docker=${DOCKER_VER}"
 }
-#
+
+
 DIR_PREFIX="helpers"
 echo "DIR_PREFIX=$DIR_PREFIX"
 
