@@ -56,21 +56,22 @@ if [[ -z $IDX ]]; then
   exit -1
 fi;
 
-GIT_ROOT_DIR="${HOME_DIR}/src/${DIR_PREFIX}${IDX}"
+TMUX_NAME="${DIR_PREFIX}${IDX}"
+
+GIT_ROOT_DIR="${HOME_DIR}/src/${TMUX_NAME}"
 echo "GIT_ROOT_DIR=$GIT_ROOT_DIR"
 
 # #############################################################################
 # Open the tmux session.
 # #############################################################################
 
-SETENV="dev_scripts.${DIR_PREFIX}/setenv.${DIR_PREFIX}.sh"
+SETENV="$GIT_ROOT_DIR/dev_scripts.${DIR_PREFIX}/thin_client/setenv.${DIR_PREFIX}.sh"
 
 # No `clear` since we want to see issues, if any.
 #CMD="source ${SETENV} && reset && clear"
 CMD="source ${SETENV}"
-TMUX_NAME="${DIR_PREFIX}${IDX}"
 
-tmux new-session -d -s $TMUX_NAME -n "---${TMUX_NAME}---"
+tmux new-session -d -s ${TMUX_NAME} -n "---${TMUX_NAME}---"
 
 # The first one window seems a problem.
 tmux send-keys "white; cd ${GIT_ROOT_DIR} && $CMD" C-m C-m
@@ -85,5 +86,5 @@ tmux new-window -n "jupyter"
 tmux send-keys "yellow; cd ${GIT_ROOT_DIR} && $CMD" C-m C-m
 
 # Go to the first tab.
-tmux select-window -t $TMUX_NAME:0
-tmux -2 attach-session -t $TMUX_NAME
+tmux select-window -t ${TMUX_NAME}:0
+tmux -2 attach-session -t ${TMUX_NAME}

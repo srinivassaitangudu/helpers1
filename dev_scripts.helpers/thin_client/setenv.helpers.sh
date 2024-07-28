@@ -5,13 +5,31 @@
 # use bash and doesn't have +x permissions.
 # 
 
+# NOTE: Since we are sourcing the file and thus we don't have the path for the
+# current script.
 DIR_PREFIX="helpers"
-echo "DIR_PREFIX=$DIR_PREFIX"
-PWD=$(pwd)
-GIT_ROOT_DIR=$PWD
-REPO_NAME={dirname $GIT_ROOT_DIR}
-DEV_SCRIPT_DIR=${GIT_ROOT_DIR}/dev_scripts.${REPO_NAME}
-THIN_CLIENT_DIR=${DEV_SCRIPT_DIR}/thin_client
+UTILS_PATH=$(pwd)/dev_scripts.${DIR_PREFIX}/thin_client/utils.sh
+source $UTILS_PATH
+
+# We need to overwrite the functions to use `return` instead of `exit`.
+
+# Function to check if a directory exists.
+check_dir_exists() {
+    local dir_path="$1"
+    if [[ ! -d "$dir_path" ]]; then
+        echo -e "${ERROR}: Directory '$dir_path' does not exist."
+        return -1
+    fi
+}
+
+# Function to check if a filename exists.
+check_file_exists() {
+    local file_name="$1"
+    if [[ ! -f "$file_name" ]]; then
+        echo -e "${ERROR}: File '$file_name' does not exist."
+        return -1
+    fi
+}
 
 # Give permissions to read / write to user and group.
 umask 002
@@ -20,24 +38,12 @@ umask 002
 # Virtual env
 # #############################################################################
 
-# Resolve the dir containing the Git client.
-# For now let's keep using the central version of /venv independenly of where
-# the Git client is (e.g., `.../src` vs `.../src_vc`).
-SRC_DIR="$HOME/src"
-echo "SRC_DIR=$SRC_DIR"
-if [[ ! -d $SRC_DIR ]]; then
-    echo "ERROR: Dir SRC_DIR='$SRC_DIR' doesn't exist"
-    exit -1
-fi;
-
-# This var needs to be in sync with `${THIN_CLIENT_DIR}/build.sh`.
-VENV_DIR="$SRC_DIR/venv/client_venv.${DIR_PREFIX}"
 if [[ ! -d $VENV_DIR ]]; then
-    echo "Can't find VENV_DIR='$VENV_DIR': checking the container one"
+    echo -e "${WARNING}: Can't find VENV_DIR='$VENV_DIR': checking the container one"
     # The venv in the container is in a different spot. Check that.
     VENV_DIR="/venv/client_venv.${DIR_PREFIX}"
     if [[ ! -d $VENV_DIR ]]; then
-        echo "ERROR: Can't find VENV_DIR='$VENV_DIR'. Create it with:"
+        echo -e "${ERROR}: Can't find VENV_DIR='$VENV_DIR'. Create it with:"
         echo "> ${THIN_CLIENT_DIR}/build.sh"
         return -1
     fi;
@@ -45,10 +51,7 @@ fi;
 
 ACTIVATE_SCRIPT="$VENV_DIR/bin/activate"
 echo "# Activate virtual env '$ACTIVATE_SCRIPT'"
-if [[ ! -f $ACTIVATE_SCRIPT ]]; then
-    echo "ERROR: Can't find '$ACTIVATE_SCRIPT'"
-    return -1
-fi;
+check_file_exists $ACTIVATE_SCRIPT
 source $ACTIVATE_SCRIPT
 
 echo "which python="$(which python 2>&1)
@@ -62,16 +65,15 @@ echo "# Set PATH"
 
 export PATH=.:$PATH
 export PATH=$GIT_ROOT_DIR:$PATH
-
 # Add to the PATH all the first level directory under `dev_scripts`.
 export PATH="$(find $DEV_SCRIPT_DIR -maxdepth 1 -type d -not -path "$(pwd)" | tr '\n' ':' | sed 's/:$//'):$PATH"
 
 # Remove duplicates.
-export PATH=$(echo $PATH | perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, scalar <>))')
+#export PATH=$(echo $PATH | perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, scalar <>))')
+export PATH=$(remove_dups $PATH)
 
-# Print.
 echo "PATH="
-echo $PATH | perl -e 'print join("\n", grep { not $seen{$_}++ } split(/:/, scalar <>))'
+echo_on_different_lines $PATH
 
 # #############################################################################
 # PYTHONPATH
@@ -91,6 +93,8 @@ echo $PYTHONPATH | perl -e 'print join("\n", grep { not $seen{$_}++ } split(/:/,
 # Configure environment
 # #############################################################################
 
-source ${THIN_CLIENT_DIR}/setenv.${REPO_NAME}.configure_env.sh
+SCRIPT_PATH="${THIN_CLIENT_DIR}/setenv.${DIR_PREFIX}.configure_env.sh"
+check_file_exists $SCRIPT_PATH
+source $SCRIPT_PATH
 
-echo "# setenv successful" 
+echo -e "${INFO}: setenv successful" 
