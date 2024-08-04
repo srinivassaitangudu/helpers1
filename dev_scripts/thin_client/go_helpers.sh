@@ -6,18 +6,18 @@
 # Create a global link with:
 # ```
 # > DIR_NAME="helpers"
-# > ln -sf $(pwd)/dev_scripts.${DIR_NAME}/go_${DIR_NAME}.sh ~/go_${DIR_NAME}.sh
+# > ln -sf $(pwd)/dev_scripts/go_${DIR_NAME}.sh ~/go_${DIR_NAME}.sh
 #
 # > cd $HOME/src/helpers1
-# > ls -l $(pwd)/dev_scripts.helpers/thin_client/go_helpers.sh
+# > ls -l $(pwd)/dev_scripts/thin_client/go_helpers.sh
 #
-# > ln -sf $(pwd)/dev_scripts.helpers/thin_client/go_helpers.sh ~/go_helpers.sh
+# > ln -sf $(pwd)/dev_scripts/thin_client/go_helpers.sh ~/go_helpers.sh
 # > ls -l ~/go_helpers.sh
 # ```
 
 # set -x
 
-SCRIPT_PATH="dev_scripts.helpers/thin_client/go_helpers.sh"
+SCRIPT_PATH="dev_scripts/thin_client/go_helpers.sh"
 echo "##> $SCRIPT_PATH"
 
 # Note that we don't use `utils.sh` here since we don't know where the repo is.
@@ -35,7 +35,7 @@ echo "TMUX_NAME=$TMUX_NAME"
 #GIT_ROOT_DIR="$HOME/src_vc/$DIR_PREFIX$IDX"
 GIT_ROOT_DIR="$HOME/src/${DIR_PREFIX}$IDX"
 echo "GIT_ROOT_DIR=$GIT_ROOT_DIR"
-DEV_SCRIPT_DIR=${GIT_ROOT_DIR}/dev_scripts.${DIR_PREFIX}
+DEV_SCRIPT_DIR=${GIT_ROOT_DIR}/dev_scripts
 echo "DEV_SCRIPT_DIR=$DEV_SCRIPT_DIR"
 THIN_CLIENT_DIR=${DEV_SCRIPT_DIR}/thin_client
 echo "THIN_CLIENT_DIR=$THIN_CLIENT_DIR"

@@ -5,13 +5,13 @@
 # use bash and doesn't have +x permissions.
 # 
 
-SCRIPT_PATH="dev_scripts.helpers/thin_client/setenv.helpers.sh"
+SCRIPT_PATH="dev_scripts/thin_client/setenv.helpers.sh"
 echo "##> $SCRIPT_PATH"
 
 # NOTE: Since we are sourcing the file and thus we don't have the path for the
 # current script.
 DIR_PREFIX="helpers"
-UTILS_PATH=$(pwd)/dev_scripts.${DIR_PREFIX}/thin_client/utils.sh
+UTILS_PATH=$(pwd)/dev_scripts/thin_client/utils.sh
 source $UTILS_PATH
 
 dassert_is_sourced

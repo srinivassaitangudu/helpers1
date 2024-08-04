@@ -5,7 +5,7 @@
 
 set -e
 
-SCRIPT_PATH="dev_scripts.helpers/thin_client/build.sh"
+SCRIPT_PATH="dev_scripts/thin_client/build.sh"
 echo "##> $SCRIPT_PATH"
 
 source $(dirname "$0")/utils.sh

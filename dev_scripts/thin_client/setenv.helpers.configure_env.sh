@@ -2,7 +2,7 @@
 # Configure environment specific to this project.
 #
 
-SCRIPT_PATH2="dev_scripts.helpers/thin_client/setenv.helpers.configure_env.sh"
+SCRIPT_PATH2="dev_scripts/thin_client/setenv.helpers.configure_env.sh"
 echo "##> $SCRIPT_PATH2"
 
 # AWS profiles which are propagated to Docker.

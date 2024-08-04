@@ -2,11 +2,11 @@
 #
 # Create a standard tmux session for this repo.
 #
-# > dev_scripts.{repo_name}/tmux.{repo_name}.sh 1
-# > dev_scripts.helpers/tmux.helpers.sh 1
+# > dev_scripts/tmux.{repo_name}.sh 1
+# > dev_scripts/tmux.helpers.sh 1
 #
 
-echo "##> dev_scripts.helpers/tmux.helpers.sh"
+echo "##> dev_scripts/tmux.helpers.sh"
 
 # Note that we don't use `utils.sh` here since we don't know where the repo is.
 #set -x
@@ -66,7 +66,7 @@ echo "GIT_ROOT_DIR=$GIT_ROOT_DIR"
 # Open the tmux session.
 # #############################################################################
 
-SETENV="$GIT_ROOT_DIR/dev_scripts.${DIR_PREFIX}/thin_client/setenv.${DIR_PREFIX}.sh"
+SETENV="$GIT_ROOT_DIR/dev_scripts/thin_client/setenv.${DIR_PREFIX}.sh"
 
 # No `clear` since we want to see issues, if any.
 #CMD="source ${SETENV} && reset && clear"

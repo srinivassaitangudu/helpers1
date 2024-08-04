@@ -1,5 +1,5 @@
 """
-Contain info specific of `//cmamp` repo.
+Contain info specific of `//helpers` repo.
 """
 
 # TODO(gp): Centralize all the common functions under hserver.py.
@@ -33,19 +33,19 @@ def _print(msg: str) -> None:
 
 
 def get_name() -> str:
-    return "//cmamp"
+    return "//helpers"
 
 
 def get_repo_map() -> Dict[str, str]:
     """
     Return a mapping of short repo name -> long repo name.
     """
-    repo_map: Dict[str, str] = {"cmamp": "cryptokaizen/cmamp"}
+    repo_map: Dict[str, str] = {"helpers": "kaizen-ai/helpers"}
     return repo_map
 
 
 def get_extra_amp_repo_sym_name() -> str:
-    return "cryptokaizen/cmamp"
+    return "kaizen-ai/helpers"
 
 
 # TODO(gp): -> get_gihub_host_name
@@ -61,6 +61,7 @@ def get_docker_base_image_name() -> str:
     """
     Return a base name for docker image.
     """
+    #base_image_name = "helpers"
     base_image_name = "cmamp"
     return base_image_name
 
@@ -340,6 +341,7 @@ def get_unit_test_bucket_path() -> str:
     """
     Return the path to the unit test bucket.
     """
+    assert 0, "Not supported by 'helpers'"
     unit_test_bucket = "cryptokaizen-unit-test"
     # We do not use `os.path.join` since it converts `s3://` to `s3:/`.
     unit_test_bucket_path = "s3://" + unit_test_bucket
@@ -350,6 +352,7 @@ def get_html_bucket_path() -> str:
     """
     Return the path to the bucket where published HTMLs are stored.
     """
+    assert 0, "Not supported by 'helpers'"
     html_bucket = "cryptokaizen-html"
     # We do not use `os.path.join` since it converts `s3://` to `s3:/`.
     html_bucket_path = "s3://" + html_bucket
@@ -363,6 +366,7 @@ def get_html_dir_to_url_mapping() -> Dict[str, str]:
     This is used when we have web servers serving files from specific
     directories.
     """
+    assert 0, "Not supported by 'helpers'"
     dir_to_url = {"s3://cryptokaizen-html": "http://172.30.2.44"}
     return dir_to_url
 
@@ -449,7 +453,7 @@ def config_func_to_str() -> str:
         "get_docker_shared_group",
         # "get_extra_amp_repo_sym_name",
         "get_host_name",
-        "get_html_dir_to_url_mapping",
+        # "get_html_dir_to_url_mapping",
         "get_invalid_words",
         "get_name",
         "get_repo_map",
