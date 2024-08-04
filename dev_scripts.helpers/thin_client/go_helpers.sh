@@ -50,6 +50,7 @@ if [[ $TMUX_EXISTS == 1 ]]; then
     # The session already exists: attach.
     echo "The tmux session already exists: attaching it ..."
     tmux attach-session -t $TMUX_NAME
+    exit 0
 fi
 
 # Create a new session.
