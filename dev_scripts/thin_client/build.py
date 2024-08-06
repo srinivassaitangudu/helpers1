@@ -99,7 +99,7 @@ def _parse() -> argparse.ArgumentParser:
     hparser.add_verbosity_arg(parser)
     parser.add_argument(
         '--do_not_confirm',
-        type=bool,
+        action="store_true",
         help='Do not ask for user confirmation',
         required=False
     )

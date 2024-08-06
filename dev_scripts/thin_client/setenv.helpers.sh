@@ -5,8 +5,12 @@
 # use bash and doesn't have +x permissions.
 # 
 
+# NOTE: We can't use $0 to find out in which file we are in, since this file is
+# sourced and not executed.
 SCRIPT_PATH="dev_scripts/thin_client/setenv.helpers.sh"
 echo "##> $SCRIPT_PATH"
+
+DIR_PREFIX="helpers"
 
 # We can't use $0 to find the path since we are sourcing this file.
 GIT_ROOT_PATH=$(pwd)
@@ -14,9 +18,31 @@ SOURCE_PATH=$GIT_ROOT_PATH/dev_scripts/thin_client/utils.sh
 echo "> source $SOURCE_PATH ..."
 source $SOURCE_PATH
 
-SOURCE_PATH=$GIT_ROOT_PATH/dev_scripts/thin_client/set_vars.sh
-echo "> source $SOURCE_PATH ..."
-source $SOURCE_PATH
+# Set the derived vars common to all the scripts.
+GIT_ROOT_DIR=$(pwd)
+echo "GIT_ROOT_DIR=$GIT_ROOT_DIR"
+dassert_is_git_root
+
+REPO_NAME=$(basename $GIT_ROOT_DIR)
+echo "REPO_NAME=$REPO_NAME"
+
+DEV_SCRIPT_DIR="${GIT_ROOT_DIR}/dev_scripts"
+echo "DEV_SCRIPT_DIR=$DEV_SCRIPT_DIR"
+dassert_dir_exists $DEV_SCRIPT_DIR
+
+THIN_CLIENT_DIR="${DEV_SCRIPT_DIR}/thin_client"
+echo "THIN_CLIENT_DIR=$THIN_CLIENT_DIR"
+dassert_dir_exists $DEV_SCRIPT_DIR
+
+# Resolve the dir containing the Git client.
+# For now let's keep using the central version of /venv independenly of where
+# the Git client is (e.g., `.../src` vs `.../src_vc`).
+SRC_DIR="$HOME/src"
+echo "SRC_DIR=$SRC_DIR"
+dassert_dir_exists $SRC_DIR
+
+VENV_DIR="$SRC_DIR/venv/client_venv.${DIR_PREFIX}"
+echo "VENV_DIR=$VENV_DIR"
 
 dassert_is_sourced
 
@@ -35,8 +61,8 @@ if [[ ! -d $VENV_DIR ]]; then
     VENV_DIR="/venv/client_venv.${DIR_PREFIX}"
     if [[ ! -d $VENV_DIR ]]; then
         echo -e "${ERROR}: Can't find VENV_DIR='$VENV_DIR'. Create it with:"
-        echo "> ${THIN_CLIENT_DIR}/build.sh"
-        return -1
+        echo "> ${THIN_CLIENT_DIR}/build.py"
+        return 1
     fi;
 fi;
 

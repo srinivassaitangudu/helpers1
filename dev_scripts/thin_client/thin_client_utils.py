@@ -1,5 +1,6 @@
 import os
 
+import helpers.hdbg as hdbg
 import helpers.hsystem as hsystem
 
 
@@ -26,5 +27,16 @@ def get_venv_dir(dir_prefix: str) -> str:
 
 
 def get_tmux_session() -> str:
-    _, tmux_session = hsystem.system_to_string("tmux display-message -p '#S'")
+    rc, tmux_session = hsystem.system_to_string("tmux display-message -p '#S'",
+                                               abort_on_error=False)
+    if rc != 0:
+        tmux_session = ""
     return tmux_session
+
+
+def inside_tmux() -> bool:
+    return 'TMUX' in os.environ
+
+
+def dassert_not_inside_tmux():
+    hdbg.dassert(not inside_tmux())

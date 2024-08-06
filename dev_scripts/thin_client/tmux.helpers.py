@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Check whether a tmux session exists and, if not, create it.
 """
@@ -36,41 +36,39 @@ def _main(parser: argparse.ArgumentParser) -> None:
     if args.create_global_link:
         _LOG.info("Creating the global link")
         hdbg.dassert_file_exists(SCRIPT_PATH)
-        cmd = f"ln -sf {SCRIPT_PATH} ~/go_${DIR_PREFIX}.sh"
+        cmd = f"ln -sf {SCRIPT_PATH} ~/go_{DIR_PREFIX}.sh"
         _system(cmd)
+        _LOG.info("Link created: exiting")
         sys.exit(0)
     #
     idx = int(args.index)
     tmux_name = f"{DIR_PREFIX}{idx}"
     _LOG.info("tmux_name=%s", tmux_name)
-    git_root_dir = tcu.get_git_root_dir()
-    dev_script_dir = os.path.join(git_root_dir, "dev_scripts")
-    print(f"dev_script_dir={dev_script_dir}")
-
-    thin_client_dir = os.path.join(dev_script_dir, "thin_client")
-    print(f"thin_client_dir={thin_client_dir}")
-
-    print(f"# Checking if the tmux session '{tmux_name}' already exists ...")
-    tmux_session_str = hsystem.system_to_string("tmux list-sessions")
+    #
+    _LOG.debug("Checking if the tmux session '%s' already exists", tmux_name)
+    _, tmux_session_str = hsystem.system_to_string("tmux list-sessions")
+    _LOG.debug("tmux_session_str=%s", tmux_session_str)
     # TODO(gp): This is a bit brittle. Parse the output better or check if the
     # through a command.
     tmux_exists = tmux_name in tmux_session_str
+    _LOG.debug("tmux_exists=%s", tmux_exists)
     if tmux_exists:
         # The tmux session exists.
         if args.force_restart:
             # Destroy the tmux session.
             _LOG.warning("The tmux session already exists: destroying it ...")
             current_tmux = tcu.get_tmux_session()
-            _system(f"tmux kill -session -t {current_tmux}")
+            _system(f"tmux kill-session -t {current_tmux}")
         else:
-            # Attach the existing tmux session.
             _LOG.info("The tmux session already exists: attaching it ...")
+            # Make sure we are outside a tmux session.
+            tcu.dassert_not_inside_tmux()
+            # Attach the existing tmux session.
             _system(f"tmux attach-session -t {tmux_name}")
             sys.exit(0)
     _LOG.info("The tmux session doesn't exist, creating it")
     # Make sure we are outside a tmux session.
-    current_tmux = tcu.get_tmux_session()
-    hdbg.dassert_ne(current_tmux, "", "Can't create a tmux inside a tmux")
+    tcu.dassert_not_inside_tmux()
     # Try macOS setup.
     server_name = hsystem.get_server_name()
     os_name = hsystem.get_os_name()
@@ -109,7 +107,7 @@ def _parse() -> argparse.ArgumentParser:
     hparser.add_verbosity_arg(parser)
     parser.add_argument(
         '--do_not_confirm',
-        type=bool,
+        action="store_true",
         help='Do not ask for user confirmation',
         required=False
     )
@@ -117,17 +115,17 @@ def _parse() -> argparse.ArgumentParser:
         '--index',
         type=int,
         help='Index of the client (e.g., 1, 2, 3)',
-        required=True
+        required=False,
     )
     parser.add_argument(
         '--force_restart',
-        type=bool,
+        action="store_true",
         help='Destroy the existing tmux session and start a new one',
         required=False,
     )
     parser.add_argument(
         '--create_global_link',
-        type=bool,
+        action="store_true",
         help='Create the link go_*.sh to this script in the home dir and exit',
         required=False,
     )

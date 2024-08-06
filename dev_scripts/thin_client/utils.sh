@@ -107,7 +107,6 @@ echo_on_different_lines() {
 
 
 print_vars() {
-    echo "TMUX_NAME=$TMUX_NAME"
     echo "GIT_ROOT_DIR=$GIT_ROOT_DIR"
     dassert_dir_exists $GIT_ROOT_NAME
     echo "DEV_SCRIPT_DIR=$DEV_SCRIPT_DIR"
