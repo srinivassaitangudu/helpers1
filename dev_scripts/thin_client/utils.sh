@@ -38,20 +38,28 @@ dassert_is_executed() {
     fi;
 }
 
+
+exit_or_return() {
+    ret_value=$1
+    if [[ is_sourced ]]; then
+        return -1
+    else
+        exit -1
+    fi;
+}
+
+
 dassert_dir_exists() {
     # Check if a directory exists.
     local dir_path="$1"
     if [[ ! -d "$dir_path" ]]; then
         echo -e "${ERROR}: Directory '$dir_path' does not exist."
-        if [[ is_sourced ]]; then
-            return -1
-        else
-            exit -1
-        fi;
+        exit_or_return -1
     fi
 }
 
 
+# TODO(gp): -> dassert_file_exists
 check_file_exists() {
     # Check if a filename exists.
     local file_name="$1"
@@ -65,11 +73,31 @@ check_file_exists() {
     fi
 }
 
+
+dassert_is_git_root() {
+    # Check if the current directory is the root of a Git repository.
+    if [[ -d .git ]]; then
+        echo -e "${ERROR}: Current dir '$(pwd)' is not the root of a Git repo."
+        exit_or_return -1
+    fi;
+}
+
+
+dassert_var_defined() {
+    local var_name="$1"
+    if [[ -n $var_name ]]; then
+        echo -e "${ERROR}: Var '${var_name}' is not defined and non-empty."
+        exit_or_return -1
+    fi;
+}
+
+
 remove_dups() {
     # Remove duplicates.
     local vars="$1"
     echo $vars | perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, scalar <>))'
 }
+
 
 echo_on_different_lines() {
     # Print $PATH on different lines.
@@ -108,32 +136,3 @@ print_pip_package_ver() {
     DOCKER_VER=$(docker --version)
     echo "# docker=${DOCKER_VER}"
 }
-
-
-DIR_PREFIX="helpers"
-echo "DIR_PREFIX=$DIR_PREFIX"
-
-# Extract the vars.
-GIT_ROOT_DIR=$(pwd)
-echo "GIT_ROOT_DIR=$GIT_ROOT_DIR"
-
-REPO_NAME=$(basename $GIT_ROOT_DIR)
-echo "REPO_NAME=$REPO_NAME"
-
-DEV_SCRIPT_DIR=${GIT_ROOT_DIR}/dev_scripts
-echo "DEV_SCRIPT_DIR=$DEV_SCRIPT_DIR"
-dassert_dir_exists $DEV_SCRIPT_DIR
-
-THIN_CLIENT_DIR=${DEV_SCRIPT_DIR}/thin_client
-echo "THIN_CLIENT_DIR=$THIN_CLIENT_DIR"
-dassert_dir_exists $DEV_SCRIPT_DIR
-
-# Resolve the dir containing the Git client.
-# For now let's keep using the central version of /venv independenly of where
-# the Git client is (e.g., `.../src` vs `.../src_vc`).
-SRC_DIR="$HOME/src"
-echo "SRC_DIR=$SRC_DIR"
-dassert_dir_exists $SRC_DIR
-
-VENV_DIR="$SRC_DIR/venv/client_venv.${DIR_PREFIX}"
-echo "VENV_DIR=$VENV_DIR"

@@ -16,26 +16,6 @@ source $UTILS_PATH
 
 dassert_is_sourced
 
-## We need to overwrite the functions to use `return` instead of `exit`.
-#
-## Function to check if a directory exists.
-#check_dir_exists() {
-#    local dir_path="$1"
-#    if [[ ! -d "$dir_path" ]]; then
-#        echo -e "${ERROR}: Directory '$dir_path' does not exist."
-#        return -1
-#    fi
-#}
-#
-## Function to check if a filename exists.
-#check_file_exists() {
-#    local file_name="$1"
-#    if [[ ! -f "$file_name" ]]; then
-#        echo -e "${ERROR}: File '$file_name' does not exist."
-#        return -1
-#    fi
-#}
-
 # Give permissions to read / write to user and group.
 umask 002
 
