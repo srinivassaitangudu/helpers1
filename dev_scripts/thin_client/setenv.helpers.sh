@@ -44,10 +44,6 @@ dassert_dir_exists $SRC_DIR
 VENV_DIR="$SRC_DIR/venv/client_venv.${DIR_PREFIX}"
 echo "VENV_DIR=$VENV_DIR"
 
-dassert_is_sourced
-
-print_vars
-
 # Give permissions to read / write to user and group.
 umask 002
 

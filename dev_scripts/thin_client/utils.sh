@@ -106,16 +106,6 @@ echo_on_different_lines() {
 }
 
 
-print_vars() {
-    echo "GIT_ROOT_DIR=$GIT_ROOT_DIR"
-    dassert_dir_exists $GIT_ROOT_NAME
-    echo "DEV_SCRIPT_DIR=$DEV_SCRIPT_DIR"
-    dassert_dir_exists $DEV_SCRIPT_DIR
-    echo "THIN_CLIENT_DIR=$THIN_CLIENT_DIR"
-    dassert_dir_exists $THIN_CLIENT_DIR
-}
-
-
 print_python_ver() {
     echo "which python="$(which python 2>&1)
     echo "python -v="$(python --version 2>&1)
