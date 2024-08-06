@@ -41,16 +41,18 @@ def _main(parser: argparse.ArgumentParser) -> None:
         _LOG.info("Link created: exiting")
         sys.exit(0)
     #
+    hdbg.dassert_is_not(args.index, None, "Need to specify --index")
     idx = int(args.index)
     tmux_name = f"{DIR_PREFIX}{idx}"
     _LOG.info("tmux_name=%s", tmux_name)
     #
     _LOG.debug("Checking if the tmux session '%s' already exists", tmux_name)
     _, tmux_session_str = hsystem.system_to_string("tmux list-sessions")
-    _LOG.debug("tmux_session_str=%s", tmux_session_str)
-    # TODO(gp): This is a bit brittle. Parse the output better or check if the
-    # through a command.
-    tmux_exists = tmux_name in tmux_session_str
+    _LOG.debug("tmux_session_str=\n%s", tmux_session_str)
+    # E.g.,
+    # cmamp1: 4 windows (created Sun Aug  4 09:54:53 2024) (attached)
+    tmux_sessions = [l.split(":")[0] for l in tmux_session_str.splitlines()]
+    tmux_exists = tmux_name in tmux_sessions
     _LOG.debug("tmux_exists=%s", tmux_exists)
     if tmux_exists:
         # The tmux session exists.
