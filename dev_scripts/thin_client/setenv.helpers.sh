@@ -8,13 +8,19 @@
 SCRIPT_PATH="dev_scripts/thin_client/setenv.helpers.sh"
 echo "##> $SCRIPT_PATH"
 
-# NOTE: Since we are sourcing the file and thus we don't have the path for the
-# current script.
-DIR_PREFIX="helpers"
-UTILS_PATH=$(pwd)/dev_scripts/thin_client/utils.sh
-source $UTILS_PATH
+# We can't use $0 to find the path since we are sourcing this file.
+GIT_ROOT_PATH=$(pwd)
+SOURCE_PATH=$GIT_ROOT_PATH/dev_scripts/thin_client/utils.sh
+echo "> source $SOURCE_PATH ..."
+source $SOURCE_PATH
+
+SOURCE_PATH=$GIT_ROOT_PATH/dev_scripts/thin_client/set_vars.sh
+echo "> source $SOURCE_PATH ..."
+source $SOURCE_PATH
 
 dassert_is_sourced
+
+print_vars
 
 # Give permissions to read / write to user and group.
 umask 002

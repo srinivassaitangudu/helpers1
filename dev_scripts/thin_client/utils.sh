@@ -76,7 +76,7 @@ check_file_exists() {
 
 dassert_is_git_root() {
     # Check if the current directory is the root of a Git repository.
-    if [[ -d .git ]]; then
+    if [[ ! -d .git ]]; then
         echo -e "${ERROR}: Current dir '$(pwd)' is not the root of a Git repo."
         exit_or_return -1
     fi;

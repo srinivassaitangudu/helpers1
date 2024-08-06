@@ -1,0 +1,109 @@
+#!/usr/bin/env python
+
+import argparse
+import logging
+import os
+import subprocess
+import shutil
+import platform
+
+import helpers.hdbg as hdbg
+import helpers.hparser as hparser
+import helpers.hprint as hprint
+import helpers.hsystem as hsystem
+
+import thin_client_utils as tcu
+
+_LOG = logging.getLogger(__name__)
+
+SCRIPT_PATH = os.path.abspath(__file__)
+
+# This is specific of this repo.
+DIR_PREFIX = "helpers"
+
+
+def _system(cmd: str) -> None:
+    print(hprint.frame(cmd))
+    hsystem.system(cmd, suppress_output=False)
+
+
+def _main(parser: argparse.ArgumentParser) -> None:
+    print(f"##> {SCRIPT_PATH}")
+    args = parser.parse_args()
+    hdbg.init_logger(verbosity=args.log_level, use_exec_path=True)
+    #
+    _, python_version = hsystem.system_to_string("python --version")
+    _LOG.info("# python=%s", python_version)
+    try:
+        _, aws_version = hsystem.system_to_string("aws --version")
+        _LOG.info(f"# aws={aws_version}")
+    except subprocess.CalledProcessError:
+        raise RuntimeError("AWS CLI is not installed. Please install it and "
+                           "try again.")
+    # Create the virtual environment.
+    venv_dir = tcu.get_venv_dir(DIR_PREFIX)
+    # Double check that the dir is in home.
+    hdbg.dassert(venv_dir.startswith(os.environ["HOME"] + "/src/venv"),
+                 "Invalid venv_dir='%s'", venv_dir)
+    if os.path.isdir(venv_dir):
+        if not args.do_not_confirm:
+            # Confirm.
+            msg = f"Delete old virtual environment in '{venv_dir}'?"
+            hsystem.query_yes_no(msg)
+        msg = f"Deleting dir '{venv_dir}' ..."
+        _LOG.warning(msg)
+        shutil.rmtree(venv_dir)
+        msg = f"Deleting dir '{venv_dir}' ... done"
+    _LOG.info("Creating virtual environment in %sa", venv_dir)
+    _system(f"python3 -m venv {venv_dir}")
+    # Test activating the environment.
+    activate_cmd = f"source {venv_dir}/bin/activate"
+    _system(activate_cmd)
+    # Install the requirements.
+    thin_environ_dir = tcu.get_thin_environment_dir()
+    requirements_path = os.path.join(thin_environ_dir, "requirements.txt")
+    tmp_requirements_path = os.path.join(thin_environ_dir, "tmp.requirements.txt")
+    shutil.copy(requirements_path, tmp_requirements_path)
+    if platform.system() == "Darwin":
+        with open(tmp_requirements_path, "a") as f:
+            f.write("pyyaml == 5.3.1\n")
+    _system(f"{activate_cmd} && python3 -m pip install --upgrade pip")
+    _system(f"{activate_cmd} && pip3 install -r {tmp_requirements_path}")
+    # Show the package list.
+    _system("pip3 list")
+    # Darwin specific updates.
+    if platform.system() == "Darwin":
+        _system("brew update")
+        _, brew_ver = hsystem.system_to_string("brew --version")
+        _LOG.info("# brew version=%s", brew_ver)
+        #
+        _system("brew install gh")
+        _, gh_ver = hsystem.system_to_string("gh --version")
+        _LOG.info("# gh version=%s", gh_ver)
+        # Uncomment if you want to install dive
+        # run_command("brew install dive")
+        # dive_ver = run_command("dive --version")
+        # _LOG.info("dive version=%s", dive_ver)
+    #
+    _LOG.info("%s successful", SCRIPT_PATH)
+
+
+
+def _parse() -> argparse.ArgumentParser:
+    # Create the parser.
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    hparser.add_verbosity_arg(parser)
+    parser.add_argument(
+        '--do_not_confirm',
+        type=bool,
+        help='Do not ask for user confirmation',
+        required=False
+    )
+    return parser
+
+
+if __name__ == "__main__":
+    # Parse the arguments.
+    _main(_parse())

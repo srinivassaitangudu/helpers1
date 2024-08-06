@@ -8,7 +8,17 @@ set -e
 SCRIPT_PATH="dev_scripts/thin_client/build.sh"
 echo "##> $SCRIPT_PATH"
 
-source $(dirname "$0")/utils.sh
+SOURCE_PATH=$(dirname "$0")/utils.sh
+echo "> source $SOURCE_PATH ..."
+source $SOURCE_PATH
+
+SOURCE_PATH=$(dirname "$0")/set_vars.sh
+echo "> source $SOURCE_PATH ..."
+source $SOURCE_PATH
+
+SOURCE_PATH=$(dirname "$0")/set_vars.helpers.sh
+echo "> source $SOURCE_PATH ..."
+source $SOURCE_PATH
 
 #dassert_is_executed
 
