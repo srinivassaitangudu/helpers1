@@ -1,24 +1,6 @@
 import os
-import subprocess
 
-import helpers.hdbg as hdbg
 import helpers.hsystem as hsystem
-
-# Define strings with colors
-RED = '\033[0;31m'
-YELLOW = '\033[1;33m'
-GREEN = '\033[0;32m'
-# No color
-NC = '\033[0m'
-
-
-def warning(txt: str):
-    print(YELLOW + ": " + txt + NC)
-
-
-def error(txt: str):
-    print(RED + ": " + txt + NC)
-    raise RuntimeError("")
 
 
 def get_git_root_dir() -> str:
@@ -33,9 +15,16 @@ def get_home_dir() -> str:
 
 def get_thin_environment_dir() -> str:
     git_root_dir = get_git_root_dir()
-    return f"{git_root_dir}/dev_scripts/thin_client"
+    thin_environ_dir = f"{git_root_dir}/dev_scripts/thin_client"
+    return thin_environ_dir
 
 
 def get_venv_dir(dir_prefix: str) -> str:
     home_dir = get_home_dir()
-    return f"{home_dir}/src/venv/client_venv.{dir_prefix}"
+    venv_dir = f"{home_dir}/src/venv/client_venv.{dir_prefix}"
+    return venv_dir
+
+
+def get_tmux_session() -> str:
+    _, tmux_session = hsystem.system_to_string("tmux display-message -p '#S'")
+    return tmux_session

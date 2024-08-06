@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Build a thin virtual environment to run workflows on the dev container.
+"""
 
 import argparse
 import logging
@@ -86,7 +89,6 @@ def _main(parser: argparse.ArgumentParser) -> None:
         # _LOG.info("dive version=%s", dive_ver)
     #
     _LOG.info("%s successful", SCRIPT_PATH)
-
 
 
 def _parse() -> argparse.ArgumentParser:
