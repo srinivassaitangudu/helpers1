@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Check whether a tmux session exists and, if not, create it.
+Check whether a tmux session exists and, if not, creates it.
 """
 
 import argparse
