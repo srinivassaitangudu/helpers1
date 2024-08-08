@@ -125,3 +125,103 @@ print_pip_package_ver() {
     DOCKER_VER=$(docker --version)
     echo "# docker=${DOCKER_VER}"
 }
+
+
+activate_venv() {
+    # Activate the virtual env under `$HOME/src/venv/client_venv.${venv_tag}`.
+    local venv_tag=$1
+    # Resolve the dir containing the Git client.
+    # For now let's keep using the central version of /venv independenly of where
+    # the Git client is (e.g., `.../src` vs `.../src_vc`).
+    SRC_DIR="$HOME/src"
+    echo "SRC_DIR=$SRC_DIR"
+    dassert_dir_exists $SRC_DIR
+
+    VENV_DIR="$SRC_DIR/venv/client_venv.${venv_tag}"
+    echo "VENV_DIR=$VENV_DIR"
+
+    if [[ ! -d $VENV_DIR ]]; then
+        echo -e "${WARNING}: Can't find VENV_DIR='$VENV_DIR': checking the container one"
+        # The venv in the container is in a different spot. Check that.
+        VENV_DIR="/venv/client_venv.${venv_tag}"
+        if [[ ! -d $VENV_DIR ]]; then
+            echo -e "${ERROR}: Can't find VENV_DIR='$VENV_DIR'. Create it with build.py"
+            return 1
+        fi;
+    fi;
+    
+    ACTIVATE_SCRIPT="$VENV_DIR/bin/activate"
+    echo "# Activate virtual env '$ACTIVATE_SCRIPT'"
+    check_file_exists $ACTIVATE_SCRIPT
+    source $ACTIVATE_SCRIPT
+
+    print_python_ver
+}
+
+
+set_path() {
+    local dev_script_dir=$1
+    echo "# Set PATH"
+    export PATH=$(pwd):$PATH
+    export PATH=$GIT_ROOT_DIR:$PATH
+    # Add to the PATH all the first level directory under `dev_scripts`.
+    export PATH="$(find $dev_script_dir -maxdepth 1 -type d -not -path "$(pwd)" | tr '\n' ':' | sed 's/:$//'):$PATH"
+    # Remove duplicates.
+    export PATH=$(remove_dups $PATH)
+    # Print.
+    echo "PATH=$PATH"
+}
+
+
+set_pythonpath() {
+    echo "# Set PYTHONPATH"
+    export PYTHONPATH=$(pwd):$PYTHONPATH
+    # Remove duplicates.
+    export PYTHONPATH=$(remove_dups $PYTHONPATH)
+    # Print.
+    echo "PYTHONPATH=$PYTHONPATH"
+}
+
+
+configure_specific_project() {
+    # AWS profiles which are propagated to Docker.
+    export CK_AWS_PROFILE="ck"
+
+    # These variables are propagated to Docker.
+    export CK_ECR_BASE_PATH="623860924167.dkr.ecr.eu-north-1.amazonaws.com"
+    export CK_AWS_S3_BUCKET="cryptokaizen-data"
+
+    export DEV1="172.30.2.136"
+    export DEV2="172.30.2.128"
+
+    # Print some specific env vars.
+    printenv | egrep "AM_|CK|AWS_" | sort
+
+    # Set up custom path to the alembic.ini file.
+    # See https://alembic.sqlalchemy.org/en/latest/tutorial.html#editing-the-ini-file
+    export ALEMBIC_CONFIG="alembic/alembic.ini"
+
+    alias i="invoke"
+    alias it="invoke traceback"
+    alias itpb="pbpaste | traceback_to_cfile.py -i - -o cfile"
+    alias ih="invoke --help"
+    alias il="invoke --list"
+
+    # Add autocomplete for `invoke`.
+    #source $AMP/dev_scripts/invoke_completion.sh
+}
+
+
+print_env_signature() {
+    echo "# PATH="
+    echo_on_different_lines $PATH
+    #
+    echo "# PYTHONPATH="
+    echo_on_different_lines $PYTHONPATH
+    #
+    echo "# printenv="
+    printenv
+    #
+    echo "# alias="
+    alias
+}
