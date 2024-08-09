@@ -42,9 +42,9 @@ dassert_is_executed() {
 exit_or_return() {
     ret_value=$1
     if [[ is_sourced ]]; then
-        return -1
+        return ret_value
     else
-        exit -1
+        exit ret_value
     fi;
 }
 
@@ -54,7 +54,7 @@ dassert_dir_exists() {
     local dir_path="$1"
     if [[ ! -d "$dir_path" ]]; then
         echo -e "${ERROR}: Directory '$dir_path' does not exist."
-        exit_or_return -1
+        kill -INT $$
     fi
 }
 
@@ -65,11 +65,7 @@ check_file_exists() {
     local file_name="$1"
     if [[ ! -f "$file_name" ]]; then
         echo -e "${ERROR}: File '$file_name' does not exist."
-        if [[ is_sourced ]]; then
-            return -1
-        else
-            exit -1
-        fi;
+        kill -INT $$
     fi
 }
 
@@ -78,7 +74,7 @@ dassert_is_git_root() {
     # Check if the current directory is the root of a Git repository.
     if [[ ! -d .git ]]; then
         echo -e "${ERROR}: Current dir '$(pwd)' is not the root of a Git repo."
-        exit_or_return -1
+        kill -INT $$
     fi;
 }
 
@@ -87,7 +83,7 @@ dassert_var_defined() {
     local var_name="$1"
     if [[ -n $var_name ]]; then
         echo -e "${ERROR}: Var '${var_name}' is not defined and non-empty."
-        exit_or_return -1
+        kill -INT $$
     fi;
 }
 
@@ -133,28 +129,27 @@ activate_venv() {
     # Resolve the dir containing the Git client.
     # For now let's keep using the central version of /venv independenly of where
     # the Git client is (e.g., `.../src` vs `.../src_vc`).
-    SRC_DIR="$HOME/src"
-    echo "SRC_DIR=$SRC_DIR"
-    dassert_dir_exists $SRC_DIR
-
-    VENV_DIR="$SRC_DIR/venv/client_venv.${venv_tag}"
-    echo "VENV_DIR=$VENV_DIR"
-
-    if [[ ! -d $VENV_DIR ]]; then
-        echo -e "${WARNING}: Can't find VENV_DIR='$VENV_DIR': checking the container one"
+    src_dir="$HOME/src"
+    echo "src_dir=$src_dir"
+    dassert_dir_exists $src_dir
+    #
+    venv_dir="$src_dir/venv/client_venv.${venv_tag}"
+    echo "venv_dir=$venv_dir"
+    dassert_dir_exists $venv_dir
+    if [[ ! -d $venv_dir ]]; then
+        echo -e "${WARNING}: Can't find venv_dir='$venv_dir': checking the container one"
         # The venv in the container is in a different spot. Check that.
-        VENV_DIR="/venv/client_venv.${venv_tag}"
-        if [[ ! -d $VENV_DIR ]]; then
-            echo -e "${ERROR}: Can't find VENV_DIR='$VENV_DIR'. Create it with build.py"
-            return 1
+        venv_dir="/venv/client_venv.${venv_tag}"
+        if [[ ! -d $venv_dir ]]; then
+            echo -e "${ERROR}: Can't find venv_dir='$venv_dir'. Create it with build.py"
+            kill -INT $$
         fi;
     fi;
-    
-    ACTIVATE_SCRIPT="$VENV_DIR/bin/activate"
+    ACTIVATE_SCRIPT="$venv_dir/bin/activate"
     echo "# Activate virtual env '$ACTIVATE_SCRIPT'"
     check_file_exists $ACTIVATE_SCRIPT
     source $ACTIVATE_SCRIPT
-
+    #
     print_python_ver
 }
 

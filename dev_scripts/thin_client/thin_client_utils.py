@@ -10,7 +10,6 @@ import helpers.hparser as hparser
 import helpers.hprint as hprint
 import helpers.hsystem as hsystem
 
-
 _LOG = logging.getLogger(__name__)
 
 
@@ -43,7 +42,7 @@ def get_venv_dir(dir_prefix: str) -> str:
 
 def get_tmux_session() -> str:
     rc, tmux_session = hsystem.system_to_string("tmux display-message -p '#S'",
-                                               abort_on_error=False)
+                                                abort_on_error=False)
     if rc != 0:
         tmux_session = ""
     return tmux_session
@@ -103,7 +102,7 @@ def create_parser(docstring: str) -> argparse.ArgumentParser:
 
 def create_tmux_session(parser: argparse.ArgumentParser,
                         script_path: str,
-                        dir_prefix: str, setenv_path: str) ->  \
+                        dir_prefix: str, setenv_path: str) -> \
         None:
     print(f"##> {script_path}")
     args = parser.parse_args()
@@ -167,7 +166,8 @@ def create_tmux_session(parser: argparse.ArgumentParser,
     hdbg.dassert_file_exists(setenv_path)
     tmux_cmd = f"source {setenv_path}"
     hsystem.system(f"tmux new-session -d -s {tmux_name} -n '---{tmux_name}---'")
-    hsystem.system(f"tmux send-keys 'white; cd {git_root_dir} && {tmux_cmd}' C-m C-m")
+    hsystem.system(
+        f"tmux send-keys 'white; cd {git_root_dir} && {tmux_cmd}' C-m C-m")
     windows = ["dbash", "regr", "jupyter"]
     for window in windows:
         hsystem.system(f"tmux new-window -n '{window}'")
