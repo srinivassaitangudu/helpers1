@@ -5,12 +5,12 @@
 # use bash and doesn't have +x permissions.
 # 
 
+DIR_TAG="helpers"
+
 # NOTE: We can't use $0 to find out in which file we are in, since this file is
 # sourced and not executed.
-SCRIPT_PATH="dev_scripts/thin_client/setenv.helpers.sh"
+SCRIPT_PATH="dev_scripts/thin_client/setenv.${DIR_TAG}.sh"
 echo "##> $SCRIPT_PATH"
-
-DIR_TAG="helpers"
 
 VENV_TAG="helpers"
 
@@ -19,11 +19,15 @@ umask 002
 
 # Source `utils.sh`.
 # NOTE: we can't use $0 to find the path since we are sourcing this file.
-GIT_ROOT_PATH=$(pwd)
+GIT_ROOT_DIR=$(pwd)
 echo "GIT_ROOT_DIR=$GIT_ROOT_DIR"
 
-SOURCE_PATH=$GIT_ROOT_PATH/dev_scripts/thin_client/thin_client_utils.sh
+SOURCE_PATH="${GIT_ROOT_DIR}/dev_scripts/thin_client/thin_client_utils.sh"
 echo "> source $SOURCE_PATH ..."
+if [[ ! -f $SOURCE_PATH ]]; then
+    echo -e "ERROR: Can't find $SOURCE_PATH"
+    kill -INT $$
+fi
 source $SOURCE_PATH
 
 activate_venv $VENV_TAG

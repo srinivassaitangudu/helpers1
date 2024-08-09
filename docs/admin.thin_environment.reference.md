@@ -1,37 +1,26 @@
 Each repo relies on several concept:
 
-- "thin environment", which is the Python environment that contains enough
-  packages to run commands
-- The "set env" script, which is used to configured a shell inside the thin environment
-- The "tmux" script, which is used to create a `tmux` session with our standard
-  setup for the repo (e.g., multiple windows on different repo and sub-repos)
-- The Docker environment, which contains all the dependencies to do the actual
-  development (e.g., run the tools, run the unit tests)
-
-We rule several rules when we compose sub-repos (e.g., `helpers` inside
-`sports_analytics`)
+- "thin environment": a Python environment that contains enough packages to run
+  commands and start the development system in Docker
+- "set env" script: it is used to configured a shell inside the thin environment
+- "tmux" script: it is used to create a `tmux` session with our standard setup
+  for the repo (e.g., multiple windows on different repo and sub-repos)
+- Docker environment: it contains all the libraries, packages, and dependencies
+  for the actual development (e.g., run the tools, run the unit tests)
 
 ## Naming objects composed across repos
-- Sometimes the same function needs to performed composing the results from
-  different repos
-  - E.g., setting the variables as the variables in the innermost (e.g.,
-    `helpers`) together with the variables needed in an external repo (e.g.,
-    `cmamp`)
-
 - We add a suffix representing the name of the repo any time we need to
   distinguish different objects
   - E.g., `dev_scripts_helpers` vs `dev_scripts_cmamp`
-- We can't always use the `.` to represent the composition since `.` creates
-  problems when importing Python files, and so we resort to using `_`
+- We can't always use the `.` to separate the fields since `.` creates problems
+  when importing Python files, and so we resort to using `_`
 
-- On the one side, we agree that the directory structure should help distinguish
+- On the one hand, we agree that the directory structure should help distinguish
   different objects
   - E.g., `//helpers/.../dev_scripts` vs `//cmamp/.../dev_scripts`
-  - The problem with the previous approach is that the same name easily create
-    confusion and can be a source of bugs, since one needs to always keep track
-    of the dir
-
-- TODO(gp): Explain this
+- On the other hand, with the previous approach is that the same name easily create
+  confusion and can be a source of bugs, since one needs to always keep track
+  of the including dir
 
 # Files
 

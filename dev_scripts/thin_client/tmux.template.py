@@ -28,4 +28,6 @@ if __name__ == "__main__":
     dir_prefix = "xyz"
     setenv_path = os.path.join("dev_scripts_xyz",
                                "thin_client", "setenv.xyz.sh")
-    tcu.create_tmux_session(parser, SCRIPT_PATH, dir_prefix, setenv_path)
+    has_subrepo = True
+    tcu.create_tmux_session(parser, SCRIPT_PATH, dir_prefix, setenv_path,
+                            has_subrepo)
