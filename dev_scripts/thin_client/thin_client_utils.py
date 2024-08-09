@@ -5,6 +5,8 @@ import logging
 import os
 import sys
 
+# We need to tweak `PYTHONPATH` directly since we are bootstrapping the system.
+sys.path.append('helpers_root')
 import helpers.hdbg as hdbg
 import helpers.hparser as hparser
 import helpers.hprint as hprint
@@ -118,9 +120,6 @@ def _create_helpers_tmux(git_root_dir: str, setenv_path: str, tmux_name: str)\
     # Create the remaining ones.
     windows = ["dbash", "regr", "jupyter"]
     for window in windows:
-        # hsystem.system(f"tmux new-window -n '{window}'")
-        # hsystem.system(
-        #     f"tmux send-keys 'green; cd {git_root_dir} && {tmux_cmd}' C-m C-m")
         _create_new_window(window, git_root_dir, tmux_cmd)
     # Go to the first tab.
     hsystem.system(f"tmux select-window -t {tmux_name}:0")
@@ -139,10 +138,6 @@ def _create_helpers_tmux_with_subrepo(git_root_dir: str, setenv_path: str,
     # Create the remaining windows in the super-repo.
     windows = ["dbash", "regr", "jupyter"]
     for window in windows:
-        # cmd = f"tmux new-window -n '{window}'"
-        # hsystem.system(cmd)
-        # cmd = "tmux send-keys 'green; cd {git_root_dir} && {tmux_cmd}' C-m C-m"
-        # hsystem.system(cmd)
         _create_new_window(window, git_root_dir, tmux_cmd)
     # Create the first window in the sub-repo.
     cmd = f"tmux new-window -n '---HELPERS---'"
@@ -155,12 +150,7 @@ def _create_helpers_tmux_with_subrepo(git_root_dir: str, setenv_path: str,
     # Create the remaining windows in the sub-repo.
     windows = ["dbash", "regr", "jupyter"]
     for window in windows:
-        # cmd = f"tmux new-window -n '{window}'"
-        # hsystem.system(cmd)
-        # cmd = f"tmux send-keys 'green; cd {git_root_dir} && {tmux_cmd}' C-m C-m"
-        # hsystem.system(cmd)
         _create_new_window(window, git_subrepo_dir, tmux_cmd)
-
     # Go to the first tab.
     hsystem.system(f"tmux select-window -t {tmux_name}:0")
     hsystem.system(f"tmux -2 attach-session -t {tmux_name}")
@@ -197,7 +187,7 @@ def create_tmux_session(parser: argparse.ArgumentParser,
     if args.create_global_link:
         _LOG.info("Creating the global link")
         hdbg.dassert_file_exists(script_path)
-        cmd = f"ln -sf {script_path} ~/go_{dir_prefix}.sh"
+        cmd = f"ln -sf {script_path} ~/go_{dir_prefix}.py"
         system(cmd)
         _LOG.info("Link created: exiting")
         sys.exit(0)

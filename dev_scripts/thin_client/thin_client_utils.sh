@@ -156,6 +156,7 @@ activate_venv() {
 
 set_path() {
     local dev_script_dir=$1
+    dassert_dir_exists $dev_script_dir
     echo "# Set PATH"
     export PATH=$(pwd):$PATH
     export PATH=$GIT_ROOT_DIR:$PATH
