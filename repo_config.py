@@ -1,5 +1,5 @@
 """
-Contain info specific of `//helpers` repo.
+Contain info specific of this repo.
 """
 
 # TODO(gp): Centralize all the common functions under hserver.py.
@@ -32,20 +32,26 @@ def _print(msg: str) -> None:
 # #############################################################################
 
 
+_REPO_NAME = "helpers"
+_GITHUB_REPO_ACCOUNT = "kaizen-ai"
+# TODO(gp): Create and use helpers Docker image.
+#_DOCKER_IMAGE_NAME = "helpers"
+_DOCKER_IMAGE_NAME = "cmamp"
+
 def get_name() -> str:
-    return "//helpers"
+    return f"//{_REPO_NAME}"
 
 
 def get_repo_map() -> Dict[str, str]:
     """
     Return a mapping of short repo name -> long repo name.
     """
-    repo_map: Dict[str, str] = {"helpers": "kaizen-ai/helpers"}
+    repo_map: Dict[str, str] = {_REPO_NAME: f"{_GITHUB_REPO_ACCOUNT}/{_REPO_NAME}"}
     return repo_map
 
 
 def get_extra_amp_repo_sym_name() -> str:
-    return "kaizen-ai/helpers"
+    return f"{_GITHUB_REPO_ACCOUNT}/{_REPO_NAME}"
 
 
 # TODO(gp): -> get_gihub_host_name
@@ -61,9 +67,7 @@ def get_docker_base_image_name() -> str:
     """
     Return a base name for docker image.
     """
-    #base_image_name = "helpers"
-    base_image_name = "cmamp"
-    return base_image_name
+    return _DOCKER_IMAGE_NAME
 
 
 # #############################################################################
@@ -341,7 +345,8 @@ def get_unit_test_bucket_path() -> str:
     """
     Return the path to the unit test bucket.
     """
-    assert 0, "Not supported by 'helpers'"
+    
+    assert 0, f"Not supported by '{_REPO_NAME}'"
     unit_test_bucket = "cryptokaizen-unit-test"
     # We do not use `os.path.join` since it converts `s3://` to `s3:/`.
     unit_test_bucket_path = "s3://" + unit_test_bucket
@@ -352,7 +357,7 @@ def get_html_bucket_path() -> str:
     """
     Return the path to the bucket where published HTMLs are stored.
     """
-    assert 0, "Not supported by 'helpers'"
+    assert 0, f"Not supported by '{_REPO_NAME}'"
     html_bucket = "cryptokaizen-html"
     # We do not use `os.path.join` since it converts `s3://` to `s3:/`.
     html_bucket_path = "s3://" + html_bucket
@@ -366,7 +371,7 @@ def get_html_dir_to_url_mapping() -> Dict[str, str]:
     This is used when we have web servers serving files from specific
     directories.
     """
-    assert 0, "Not supported by 'helpers'"
+    assert 0, f"Not supported by '{_REPO_NAME}'"
     dir_to_url = {"s3://cryptokaizen-html": "http://172.30.2.44"}
     return dir_to_url
 

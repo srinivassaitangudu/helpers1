@@ -134,3 +134,19 @@ Each repo relies on several concept:
   ```bash
   > dev_scripts_sports_analytics/thin_client/tmux.sports_analytics.py --index 1 --force_restart
   ```
+
+## 
+
+
+
+changelog.txt
+conftest.py
+invoke.yaml
+pytest.ini
+repo_config.py
+tasks.py
+
+Some files need to be modified
+
+repo_config.py
+tasks.py

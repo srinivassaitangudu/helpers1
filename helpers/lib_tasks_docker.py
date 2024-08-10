@@ -994,7 +994,6 @@ def get_image(
     image = [base_image]
     # Handle the stage.
     image.append(f":{stage}")
-    # User the user name.
     if stage == "local":
         user = hsystem.get_user_name()
         image.append(f"-{user}")
