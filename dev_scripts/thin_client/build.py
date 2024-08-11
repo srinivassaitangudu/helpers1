@@ -6,16 +6,16 @@ Build a thin virtual environment to run workflows on the dev container.
 import argparse
 import logging
 import os
-import subprocess
-import shutil
 import platform
+import shutil
+import subprocess
+
+import thin_client_utils as tcu
 
 import helpers.hdbg as hdbg
 import helpers.hparser as hparser
 import helpers.hprint as hprint
 import helpers.hsystem as hsystem
-
-import thin_client_utils as tcu
 
 _LOG = logging.getLogger(__name__)
 
@@ -41,13 +41,17 @@ def _main(parser: argparse.ArgumentParser) -> None:
         _, aws_version = hsystem.system_to_string("aws --version")
         _LOG.info(f"# aws={aws_version}")
     except subprocess.CalledProcessError:
-        raise RuntimeError("AWS CLI is not installed. Please install it and "
-                           "try again.")
+        raise RuntimeError(
+            "AWS CLI is not installed. Please install it and " "try again."
+        )
     # Create the virtual environment.
     venv_dir = tcu.get_venv_dir(DIR_PREFIX)
     # Double check that the dir is in home.
-    hdbg.dassert(venv_dir.startswith(os.environ["HOME"] + "/src/venv"),
-                 "Invalid venv_dir='%s'", venv_dir)
+    hdbg.dassert(
+        venv_dir.startswith(os.environ["HOME"] + "/src/venv"),
+        "Invalid venv_dir='%s'",
+        venv_dir,
+    )
     if os.path.isdir(venv_dir):
         if not args.do_not_confirm:
             # Confirm.
@@ -98,10 +102,10 @@ def _parse() -> argparse.ArgumentParser:
     )
     hparser.add_verbosity_arg(parser)
     parser.add_argument(
-        '--do_not_confirm',
+        "--do_not_confirm",
         action="store_true",
-        help='Do not ask for user confirmation',
-        required=False
+        help="Do not ask for user confirmation",
+        required=False,
     )
     return parser
 

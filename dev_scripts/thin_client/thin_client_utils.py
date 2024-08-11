@@ -1,12 +1,10 @@
-import os
-
 import argparse
 import logging
 import os
 import sys
 
 # We need to tweak `PYTHONPATH` directly since we are bootstrapping the system.
-sys.path.append('helpers_root')
+sys.path.append("helpers_root")
 import helpers.hdbg as hdbg
 import helpers.hparser as hparser
 import helpers.hprint as hprint
@@ -26,7 +24,7 @@ def get_git_root_dir() -> str:
 
 
 def get_home_dir() -> str:
-    home_dir = os.environ['HOME']
+    home_dir = os.environ["HOME"]
     return home_dir
 
 
@@ -43,15 +41,16 @@ def get_venv_dir(dir_prefix: str) -> str:
 
 
 def get_tmux_session() -> str:
-    rc, tmux_session = hsystem.system_to_string("tmux display-message -p '#S'",
-                                                abort_on_error=False)
+    rc, tmux_session = hsystem.system_to_string(
+        "tmux display-message -p '#S'", abort_on_error=False
+    )
     if rc != 0:
         tmux_session = ""
     return tmux_session
 
 
 def inside_tmux() -> bool:
-    return 'TMUX' in os.environ
+    return "TMUX" in os.environ
 
 
 def dassert_not_inside_tmux():
@@ -72,45 +71,46 @@ def create_parser(docstring: str) -> argparse.ArgumentParser:
     # Create the parser.
     parser = argparse.ArgumentParser(
         description=docstring,
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     hparser.add_verbosity_arg(parser)
     parser.add_argument(
-        '--do_not_confirm',
+        "--do_not_confirm",
         action="store_true",
-        help='Do not ask for user confirmation',
-        required=False
+        help="Do not ask for user confirmation",
+        required=False,
     )
     parser.add_argument(
-        '--index',
+        "--index",
         type=int,
-        help='Index of the client (e.g., 1, 2, 3)',
+        help="Index of the client (e.g., 1, 2, 3)",
         required=False,
     )
     parser.add_argument(
-        '--force_restart',
+        "--force_restart",
         action="store_true",
-        help='Destroy the existing tmux session and start a new one',
+        help="Destroy the existing tmux session and start a new one",
         required=False,
     )
     parser.add_argument(
-        '--create_global_link',
+        "--create_global_link",
         action="store_true",
-        help='Create the link go_*.sh to this script in the home dir and exit',
+        help="Create the link go_*.sh to this script in the home dir and exit",
         required=False,
     )
     return parser
 
 
-def _create_new_window(window:str, dir_name:str, tmux_cmd: str) -> None:
+def _create_new_window(window: str, dir_name: str, tmux_cmd: str) -> None:
     cmd = f"tmux new-window -n '{window}'"
     hsystem.system(cmd)
     cmd = f"tmux send-keys 'green; cd {dir_name} && {tmux_cmd}' C-m C-m"
     hsystem.system(cmd)
 
 
-def _create_helpers_tmux(git_root_dir: str, setenv_path: str, tmux_name: str)\
-        -> None:
+def _create_helpers_tmux(
+    git_root_dir: str, setenv_path: str, tmux_name: str
+) -> None:
     cmd = f"tmux new-session -d -s {tmux_name} -n '---{tmux_name}---'"
     hsystem.system(cmd)
     # Create the first window.
@@ -126,8 +126,9 @@ def _create_helpers_tmux(git_root_dir: str, setenv_path: str, tmux_name: str)\
     hsystem.system(f"tmux -2 attach-session -t {tmux_name}")
 
 
-def _create_helpers_tmux_with_subrepo(git_root_dir: str, setenv_path: str,
-                                 tmux_name: str) -> None:
+def _create_helpers_tmux_with_subrepo(
+    git_root_dir: str, setenv_path: str, tmux_name: str
+) -> None:
     # Create the session.
     cmd = f"tmux new-session -d -s {tmux_name} -n '---{tmux_name}---'"
     hsystem.system(cmd)
@@ -144,8 +145,7 @@ def _create_helpers_tmux_with_subrepo(git_root_dir: str, setenv_path: str,
     hsystem.system(cmd)
     git_subrepo_dir = os.path.join(git_root_dir, "helpers_root")
     tmux_cmd = f"source dev_scripts/thin_client/setenv.helpers.sh"
-    cmd = (f"tmux send-keys 'white; cd {git_subrepo_dir} && {tmux_cmd}' "
-           f"C-m-m")
+    cmd = f"tmux send-keys 'white; cd {git_subrepo_dir} && {tmux_cmd}' " f"C-m-m"
     hsystem.system(cmd)
     # Create the remaining windows in the sub-repo.
     windows = ["dbash", "regr", "jupyter"]
@@ -156,11 +156,13 @@ def _create_helpers_tmux_with_subrepo(git_root_dir: str, setenv_path: str,
     hsystem.system(f"tmux -2 attach-session -t {tmux_name}")
 
 
-def create_tmux_session(parser: argparse.ArgumentParser,
-                        script_path: str,
-                        dir_prefix: str, setenv_path: str,
-                        has_subrepo: bool,
-                        ) -> None:
+def create_tmux_session(
+    parser: argparse.ArgumentParser,
+    script_path: str,
+    dir_prefix: str,
+    setenv_path: str,
+    has_subrepo: bool,
+) -> None:
     """
     Creates a new tmux session or attaches to an existing one.
 
@@ -246,4 +248,3 @@ def create_tmux_session(parser: argparse.ArgumentParser,
         _create_helpers_tmux_with_subrepo(git_root_dir, setenv_path, tmux_name)
     else:
         _create_helpers_tmux(git_root_dir, setenv_path, tmux_name)
-

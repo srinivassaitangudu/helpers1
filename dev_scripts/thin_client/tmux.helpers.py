@@ -19,5 +19,6 @@ if __name__ == "__main__":
     dir_prefix = "helpers"
     setenv_path = os.path.join("dev_scripts", "thin_client", "setenv.helpers.sh")
     has_subrepo = False
-    tcu.create_tmux_session(parser, SCRIPT_PATH, dir_prefix, setenv_path,
-                            has_subrepo)
+    tcu.create_tmux_session(
+        parser, SCRIPT_PATH, dir_prefix, setenv_path, has_subrepo
+    )
