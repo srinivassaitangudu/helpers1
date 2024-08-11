@@ -208,6 +208,7 @@ def run(
     print_cmd: bool = False,
     **ctx_run_kwargs: Any,
 ) -> Optional[int]:
+    cmd = hprint.dedent(cmd)
     _LOG.debug(hprint.to_str("cmd dry_run"))
     if use_one_line_cmd:
         cmd = _to_single_line_cmd(cmd)

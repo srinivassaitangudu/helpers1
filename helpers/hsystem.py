@@ -284,6 +284,7 @@ def _system(
 # pylint: disable=too-many-arguments
 def system(
     cmd: str,
+    *,
     abort_on_error: bool = True,
     suppress_error: Optional[Any] = None,
     suppress_output: Union[str, bool] = "ON_DEBUG_LEVEL",
@@ -300,6 +301,7 @@ def system(
 
     See _system() for options.
     """
+    cmd = hprint.dedent(cmd)
     rc, _ = _system(
         cmd,
         abort_on_error=abort_on_error,

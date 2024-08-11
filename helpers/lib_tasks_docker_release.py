@@ -15,6 +15,7 @@ from invoke import task
 # this code needs to run with minimal dependencies and without Docker.
 import helpers.hdbg as hdbg
 import helpers.hgit as hgit
+import helpers.hprint as hprint
 import helpers.hs3 as hs3
 import helpers.hsystem as hsystem
 import helpers.lib_tasks_docker as hlitadoc
@@ -42,7 +43,8 @@ def _prepare_docker_ignore(ctx: Any, docker_ignore: str) -> None:
     """
     Copy the target docker_ignore in the proper position for `docker build`.
     """
-    # Currently there is no built-in way to control which .dockerignore to use.
+    # Currently there is no built-in way to control which `.dockerignore` to
+    # use.
     # https://stackoverflow.com/questions/40904409
     hdbg.dassert_path_exists(docker_ignore)
     cmd = f"cp -f {docker_ignore} .dockerignore"
@@ -122,7 +124,7 @@ def docker_build_local_image(  # type: ignore
             cmd += " --no-update"
         hlitauti.run(ctx, cmd)
     # Prepare `.dockerignore`.
-    docker_ignore = ".dockerignore.dev"
+    docker_ignore = "devops/docker_build/dockerignore.dev"
     _prepare_docker_ignore(ctx, docker_ignore)
     # Build the local image.
     image_local = hlitadoc.get_image(base_image, "local", dev_version)
@@ -539,7 +541,7 @@ def docker_build_prod_image(  # type: ignore
         version, container_dir_name=container_dir_name
     )
     # Prepare `.dockerignore`.
-    docker_ignore = ".dockerignore.prod"
+    docker_ignore = "devops/docker_build/dockerignore.prod"
     _prepare_docker_ignore(ctx, docker_ignore)
     # TODO(gp): We should do a `i git_clean` to remove artifacts and check that
     #  the client is clean so that we don't release from a dirty client.
@@ -819,7 +821,7 @@ def _check_workspace_dir_sizes() -> None:
     directory_size_list = hsystem.system_to_string(
         f"du --threshold {fs_item_max_threshold} -hs $(ls -A) | sort -hr"
     )[1].split("\n")
-    # Filter out directories ignored by ``.dockerignore.prod` + "amp/"
+    # Filter out directories ignored by `dockerignore.prod` + "amp/"
     # as submodule.
     ignored_dirs = ["amp", "ck.infra", "amp/ck.infra", "docs", ".git", "amp/.git"]
     offending_items = [
