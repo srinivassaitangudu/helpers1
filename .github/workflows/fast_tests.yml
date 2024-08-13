@@ -28,20 +28,20 @@ jobs:
       # pulling the image from ECR, enable this.
       # Pass AWS credentials via GH secrets. This is needed to pull the Docker image
       # that will be used to run the action.
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     aws-access-key-id: ${{ secrets.CK_AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.CK_AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: ${{ secrets.CK_AWS_DEFAULT_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.CK_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CK_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.CK_AWS_DEFAULT_REGION }}
 
       # This is needed to pull the Docker image.
-      # - name: Login to Amazon ECR
-      #   id: login-ecr
-      #   uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Perform docker login
-        run: docker login ghcr.io -u gpsaggese -p ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
+      #- name: Perform docker login
+      #  run: docker login ghcr.io -u gpsaggese -p ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
 
       # Make everything accessible by any user to avoid permission errors.
       - name: Cleanup
@@ -68,16 +68,16 @@ jobs:
           pip install -r .github/gh_requirements.txt
 
       # Pull the latest Docker image to run the regressions on.
-      # - name: Pull image
-      #   if: github.event.pull_request.draft == false
-      #   env:
-      #     CK_ECR_BASE_PATH: ${{ secrets.CK_ECR_BASE_PATH }}
-      #   run: invoke docker_pull
-
-      # Pull the latest Docker image from GHCR registry instead of ECR for cost saving purposes to run the regressions on.
       - name: Pull image
         if: github.event.pull_request.draft == false
-        run: docker pull ghcr.io/cryptokaizen/cmamp:dev
+        env:
+          CK_ECR_BASE_PATH: ${{ secrets.CK_ECR_BASE_PATH }}
+        run: invoke docker_pull
+
+      # Pull the latest Docker image from GHCR registry instead of ECR for cost saving purposes to run the regressions on.
+      #- name: Pull image
+      #  if: github.event.pull_request.draft == false
+      #  run: docker pull ghcr.io/cryptokaizen/cmamp:dev
 
       # Run the `invoke` target `run_fast_tests` to run tests that are under 5 seconds.
       # See the corresponding documentation for more information.

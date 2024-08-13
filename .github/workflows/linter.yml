@@ -16,21 +16,21 @@ jobs:
       # pulling the image from ECR, enable this.
       # # Pass AWS credentials via GH secrets. This is needed to pull the Docker image
       # # that will be used to run the action.
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     aws-access-key-id: ${{ secrets.CK_AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.CK_AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: ${{ secrets.CK_AWS_DEFAULT_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.CK_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CK_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.CK_AWS_DEFAULT_REGION }}
 
       # # This is needed to pull the Docker image.
-      # - name: Login to Amazon ECR
-      #   id: login-ecr
-      #   uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Perform docker login
-        if: github.event.pull_request.draft == false
-        run: docker login ghcr.io -u gpsaggese -p ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
+      #- name: Perform docker login
+      #  if: github.event.pull_request.draft == false
+      #  run: docker login ghcr.io -u gpsaggese -p ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
 
       # Make everything accessible by any user to avoid permission errors.
       - name: Cleanup
