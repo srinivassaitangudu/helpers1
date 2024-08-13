@@ -30,7 +30,7 @@ jobs:
 
       #- name: Perform docker login
       #  if: github.event.pull_request.draft == false
-      #  run: docker login ghcr.io -u gpsaggese -p ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
+      #  run: docker login ghcr.io -u gpsaggese -p ${{ secrets.GITHUB_TOKEN }}
 
       # Make everything accessible by any user to avoid permission errors.
       - name: Cleanup
@@ -47,7 +47,7 @@ jobs:
           # in order to compare the current branch with the master branch.
           # The `0` means unlimited depth.
           fetch-depth: 0
-          token: ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # Install packages that are required to run the job via GH.
       - name: Install dependencies
@@ -78,7 +78,7 @@ jobs:
           CK_ECR_BASE_PATH: ghcr.io/cryptokaizen
           CK_AWS_S3_BUCKET: ${{ secrets.CK_AWS_S3_BUCKET }}
           CK_TELEGRAM_TOKEN: ${{ secrets.CK_TELEGRAM_TOKEN }}
-          GH_ACTION_ACCESS_TOKEN: ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # To run the linter, fetch the master branch for comparison with the
         # current branch.
         run: |
@@ -90,7 +90,7 @@ jobs:
         if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         uses: Sibz/github-status-action@v1
         with:
-          authToken: ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
+          authToken: ${{ secrets.GITHUB_TOKEN }}
           context: "Run_linter"
           description: 'Job is done (manual run)'
           state: ${{ job.status }}

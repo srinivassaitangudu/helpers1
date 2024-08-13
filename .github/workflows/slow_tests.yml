@@ -41,7 +41,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       #- name: Perform docker login
-      #  run: docker login ghcr.io -u gpsaggese -p ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
+      #  run: docker login ghcr.io -u gpsaggese -p ${{ secrets.GITHUB_TOKEN }}
 
       # Make everything accessible by any user to avoid permission errors.
       - name: Cleanup
@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
-          token: ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # To see the modules in `amp`, PYTHONPATH needs to include `amp` in the
       # same way we do in `setenv.sh`.
@@ -98,7 +98,7 @@ jobs:
           CK_ECR_BASE_PATH: ghcr.io/cryptokaizen
           CK_AWS_S3_BUCKET: ${{ secrets.CK_AWS_S3_BUCKET }}
           CK_TELEGRAM_TOKEN: ${{ secrets.CK_TELEGRAM_TOKEN }}
-          GH_ACTION_ACCESS_TOKEN: ${{ secrets.GH_ACTION_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # https://github.community/t/dont-run-actions-on-draft-pull-requests/16817/19
         # Do not run on draft pull requests.
         if: github.event.pull_request.draft == false
