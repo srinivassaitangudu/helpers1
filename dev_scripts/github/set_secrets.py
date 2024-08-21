@@ -12,7 +12,6 @@ The json file looks like:
 ```
 {
     "GH_ACTION_ACCESS_TOKEN": "***",
-    "AM_ECR_BASE_PATH": "***",
     "CK_AWS_ACCESS_KEY_ID": "***",
     "CK_AWS_SECRET_ACCESS_KEY": "***",
     "CK_AWS_DEFAULT_REGION": "eu-north-1",

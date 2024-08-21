@@ -7,7 +7,6 @@ services:
       - SYS_ADMIN
     environment:
       - AM_AWS_PROFILE=$AM_AWS_PROFILE
-      - AM_ECR_BASE_PATH=$AM_ECR_BASE_PATH
       - AM_ENABLE_DIND=0
       - AM_FORCE_TEST_FAIL=$AM_FORCE_TEST_FAIL
       - AM_REPO_CONFIG_CHECK=True
