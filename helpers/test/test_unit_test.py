@@ -1052,13 +1052,6 @@ class Test_purify_from_env_vars(hunitest.TestCase):
         env_var = "AM_AWS_S3_BUCKET"
         self.helper(env_var)
 
-    def test4(self) -> None:
-        """
-        - $AM_ECR_BASE_PATH
-        """
-        env_var = "AM_ECR_BASE_PATH"
-        self.helper(env_var)
-
     @pytest.mark.skipif(
         not henv.execute_repo_config_code("get_name()") == "//cmamp",
         reason="Run only in //cmamp",
@@ -1069,12 +1062,10 @@ class Test_purify_from_env_vars(hunitest.TestCase):
         """
         am_aws_s3_bucket = os.environ["AM_AWS_S3_BUCKET"]
         ck_aws_s3_bucket = os.environ["CK_AWS_S3_BUCKET"]
-        am_ecr_base_path = os.environ["AM_ECR_BASE_PATH"]
         #
         text = f"""
         $AM_AWS_S3_BUCKET = {am_aws_s3_bucket}
         $CK_AWS_S3_BUCKET = {ck_aws_s3_bucket}
-        $AM_ECR_BASE_PATH = {am_ecr_base_path}
         """
         #
         actual = hunitest.purify_from_env_vars(text)

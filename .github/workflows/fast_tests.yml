@@ -86,7 +86,7 @@ jobs:
         # Do not run on draft pull requests.
         if: github.event.pull_request.draft == false
         env:
-          AM_ECR_BASE_PATH: ${{ secrets.AM_ECR_BASE_PATH }}
+          
           CK_AWS_ACCESS_KEY_ID: ${{ secrets.CK_AWS_ACCESS_KEY_ID }}
           CK_AWS_SECRET_ACCESS_KEY: ${{ secrets.CK_AWS_SECRET_ACCESS_KEY }}
           CK_AWS_DEFAULT_REGION: ${{ secrets.CK_AWS_DEFAULT_REGION }}
