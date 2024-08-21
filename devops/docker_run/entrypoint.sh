@@ -87,13 +87,6 @@ git rev-parse --show-toplevel
 # Check set-up.
 ./devops/docker_run/test_setup.sh
 
-if [[ $AM_AWS_DEFAULT_REGION == "" ]]; then
-    unset AM_AWS_DEFAULT_REGION
-else
-    echo "AM_AWS_DEFAULT_REGION='$AM_AWS_DEFAULT_REGION'"
-fi;
-aws configure --profile am list || true
-
 echo "AM_CONTAINER_VERSION='$AM_CONTAINER_VERSION'"
 
 # Test the installed packages.

@@ -100,7 +100,6 @@ def get_env_vars() -> List[str]:
     """
     # Keep in sync with `lib_tasks.py:_generate_compose_file()`.
     env_var_names = [
-        "AM_AWS_DEFAULT_REGION",
         # AWS profile to use for AM.
         "AM_AWS_PROFILE",
         # S3 bucket to use for AM.
