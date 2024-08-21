@@ -611,7 +611,7 @@ def generate_aws_files(
         )
         return
     if aws_profiles is None:
-        aws_profiles = ["am", "ck"]
+        aws_profiles = ["ck"]
     config_file_text = []
     credentials_file_text = []
     # Get text with settings for both files.
