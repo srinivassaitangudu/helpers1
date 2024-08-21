@@ -479,7 +479,6 @@ def _generate_docker_compose_file(
         cap_add:
           - SYS_ADMIN
         environment:
-          - AM_AWS_DEFAULT_REGION=$AM_AWS_DEFAULT_REGION
           - AM_AWS_PROFILE=$AM_AWS_PROFILE
           - AM_AWS_S3_BUCKET=$AM_AWS_S3_BUCKET
           - AM_ECR_BASE_PATH=$AM_ECR_BASE_PATH

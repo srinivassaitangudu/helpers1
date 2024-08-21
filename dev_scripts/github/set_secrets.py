@@ -12,7 +12,6 @@ The json file looks like:
 ```
 {
     "GH_ACTION_ACCESS_TOKEN": "***",
-    "AM_AWS_DEFAULT_REGION": "us-east-1",
     "AM_ECR_BASE_PATH": "***",
     "AM_AWS_S3_BUCKET": "alphamatic-data",
     "CK_AWS_ACCESS_KEY_ID": "***",
