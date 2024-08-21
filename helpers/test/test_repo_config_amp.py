@@ -125,7 +125,6 @@ class TestRepoConfig_Amp_signature1(hunitest.TestCase):
           AM_FORCE_TEST_FAIL=''
           AM_REPO_CONFIG_CHECK='True'
           AM_REPO_CONFIG_PATH=''
-          AM_TELEGRAM_TOKEN=***
           CI=''
           GH_ACTION_ACCESS_TOKEN=empty
           """
@@ -171,7 +170,6 @@ class TestRepoConfig_Amp_signature1(hunitest.TestCase):
         AM_FORCE_TEST_FAIL=''
         AM_REPO_CONFIG_CHECK='False'
         AM_REPO_CONFIG_PATH=''
-        AM_TELEGRAM_TOKEN=***
         CI=''
         GH_ACTION_ACCESS_TOKEN=empty
         """

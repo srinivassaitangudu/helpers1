@@ -126,7 +126,6 @@ def get_env_vars() -> List[str]:
         # container to avoid using the `repo_config.py` corresponding to the
         # container launching the linter.
         "AM_REPO_CONFIG_PATH",
-        "AM_TELEGRAM_TOKEN",
         "GH_ACTION_ACCESS_TOKEN",
         # Whether we are running inside GH Actions.
         "CI",
@@ -154,7 +153,6 @@ def get_secret_env_vars() -> List[str]:
     Return the list of env vars that are secrets.
     """
     secret_env_var_names = [
-        "AM_TELEGRAM_TOKEN",
         # TODO(gp): Difference between amp and cmamp.
         "CK_AWS_ACCESS_KEY_ID",
         "CK_AWS_SECRET_ACCESS_KEY",
