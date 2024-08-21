@@ -479,11 +479,9 @@ def _generate_docker_compose_file(
         cap_add:
           - SYS_ADMIN
         environment:
-          - AM_AWS_ACCESS_KEY_ID=$AM_AWS_ACCESS_KEY_ID
           - AM_AWS_DEFAULT_REGION=$AM_AWS_DEFAULT_REGION
           - AM_AWS_PROFILE=$AM_AWS_PROFILE
           - AM_AWS_S3_BUCKET=$AM_AWS_S3_BUCKET
-          - AM_AWS_SECRET_ACCESS_KEY=$AM_AWS_SECRET_ACCESS_KEY
           - AM_ECR_BASE_PATH=$AM_ECR_BASE_PATH
           - AM_ENABLE_DIND={am_enable_dind}
           - AM_FORCE_TEST_FAIL=$AM_FORCE_TEST_FAIL
