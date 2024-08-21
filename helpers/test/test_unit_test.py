@@ -1045,14 +1045,6 @@ class Test_purify_from_env_vars(hunitest.TestCase):
         env_var = "CK_AWS_S3_BUCKET"
         self.helper(env_var)
 
-    @pytest.mark.requires_ck_infra
-    def test2(self) -> None:
-        """
-        - $AM_TELEGRAM_TOKEN
-        """
-        env_var = "AM_TELEGRAM_TOKEN"
-        self.helper(env_var)
-
     def test3(self) -> None:
         """
         - $AM_AWS_S3_BUCKET
@@ -1077,13 +1069,11 @@ class Test_purify_from_env_vars(hunitest.TestCase):
         """
         am_aws_s3_bucket = os.environ["AM_AWS_S3_BUCKET"]
         ck_aws_s3_bucket = os.environ["CK_AWS_S3_BUCKET"]
-        am_telegram_token = os.environ["AM_TELEGRAM_TOKEN"]
         am_ecr_base_path = os.environ["AM_ECR_BASE_PATH"]
         #
         text = f"""
         $AM_AWS_S3_BUCKET = {am_aws_s3_bucket}
         $CK_AWS_S3_BUCKET = {ck_aws_s3_bucket}
-        $AM_TELEGRAM_TOKEN = {am_telegram_token}
         $AM_ECR_BASE_PATH = {am_ecr_base_path}
         """
         #

@@ -15,7 +15,6 @@ The json file looks like:
     "AM_AWS_DEFAULT_REGION": "us-east-1",
     "AM_ECR_BASE_PATH": "***",
     "AM_AWS_S3_BUCKET": "alphamatic-data",
-    "AM_TELEGRAM_TOKEN": "***",
     "CK_AWS_ACCESS_KEY_ID": "***",
     "CK_AWS_SECRET_ACCESS_KEY": "***",
     "CK_AWS_DEFAULT_REGION": "eu-north-1",
