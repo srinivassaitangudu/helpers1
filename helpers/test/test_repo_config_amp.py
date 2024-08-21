@@ -118,7 +118,6 @@ class TestRepoConfig_Amp_signature1(hunitest.TestCase):
               is_mac(version='Ventura')='False'
         # Env vars:
           AM_AWS_PROFILE='am'
-          AM_AWS_S3_BUCKET='$AM_AWS_S3_BUCKET'
           AM_ECR_BASE_PATH='$AM_ECR_BASE_PATH'
           AM_ENABLE_DIND='1'
           AM_FORCE_TEST_FAIL=''
@@ -162,7 +161,6 @@ class TestRepoConfig_Amp_signature1(hunitest.TestCase):
               is_mac='True'
         # Env vars:
         AM_AWS_PROFILE='am'
-        AM_AWS_S3_BUCKET='alphamatic-data'
         AM_ECR_BASE_PATH='665840871993.dkr.ecr.us-east-1.amazonaws.com'
         AM_ENABLE_DIND='1'
         AM_FORCE_TEST_FAIL=''

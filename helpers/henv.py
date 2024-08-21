@@ -102,8 +102,6 @@ def get_env_vars() -> List[str]:
     env_var_names = [
         # AWS profile to use for AM.
         "AM_AWS_PROFILE",
-        # S3 bucket to use for AM.
-        "AM_AWS_S3_BUCKET",
         # Path to the ECR for the Docker images.
         "AM_ECR_BASE_PATH",
         # Force enabling Docker-in-Docker.
