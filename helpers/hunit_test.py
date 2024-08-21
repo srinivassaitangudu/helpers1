@@ -470,7 +470,6 @@ def purify_from_env_vars(txt: str) -> str:
     # TODO(gp): Diff between amp and cmamp.
     for env_var in [
         "AM_ECR_BASE_PATH",
-        "AM_AWS_S3_BUCKET",
         "CK_AWS_S3_BUCKET",
         "CK_ECR_BASE_PATH",
     ]:
