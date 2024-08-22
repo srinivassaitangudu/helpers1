@@ -100,17 +100,8 @@ def get_env_vars() -> List[str]:
     """
     # Keep in sync with `lib_tasks.py:_generate_compose_file()`.
     env_var_names = [
-        # AM AWS credentials.
-        "AM_AWS_ACCESS_KEY_ID",
-        "AM_AWS_DEFAULT_REGION",
         # AWS profile to use for AM.
         "AM_AWS_PROFILE",
-        # S3 bucket to use for AM.
-        "AM_AWS_S3_BUCKET",
-        # AM AWS credentials.
-        "AM_AWS_SECRET_ACCESS_KEY",
-        # Path to the ECR for the Docker images.
-        "AM_ECR_BASE_PATH",
         # Force enabling Docker-in-Docker.
         "AM_ENABLE_DIND",
         # Enable forcing certain unit tests to fail to check that unit test
@@ -130,7 +121,6 @@ def get_env_vars() -> List[str]:
         # container to avoid using the `repo_config.py` corresponding to the
         # container launching the linter.
         "AM_REPO_CONFIG_PATH",
-        "AM_TELEGRAM_TOKEN",
         "GH_ACTION_ACCESS_TOKEN",
         # Whether we are running inside GH Actions.
         "CI",
@@ -158,9 +148,6 @@ def get_secret_env_vars() -> List[str]:
     Return the list of env vars that are secrets.
     """
     secret_env_var_names = [
-        "AM_TELEGRAM_TOKEN",
-        "AM_AWS_ACCESS_KEY_ID",
-        "AM_AWS_SECRET_ACCESS_KEY",
         # TODO(gp): Difference between amp and cmamp.
         "CK_AWS_ACCESS_KEY_ID",
         "CK_AWS_SECRET_ACCESS_KEY",
