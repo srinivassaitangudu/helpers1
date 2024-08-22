@@ -611,7 +611,7 @@ def generate_aws_files(
         )
         return
     if aws_profiles is None:
-        aws_profiles = ["am", "ck"]
+        aws_profiles = ["ck"]
     config_file_text = []
     credentials_file_text = []
     # Get text with settings for both files.
@@ -644,7 +644,7 @@ def generate_aws_files(
 #   - E.g., `publish_notebooks`, saving / retrieving experiments, caching
 #
 # - The desired AWS S3 systems are selected through an `aws_profile` parameter
-#   (e.g., `am`)
+#   (e.g., `ck`)
 # - The value of AWS profile is obtained from
 #   - the `--aws_profile` command line option; or
 #   - a client specifying the needed `aws_profile`
@@ -657,8 +657,8 @@ def generate_aws_files(
 #   directly for GitHub Actions CI
 #   - One can specify env vars conditioned to different profiles using the AWS
 #     profile
-#   - E.g., `am` profile for `AWS_ACCESS_KEY_ID` corresponds to
-#     `AM_AWS_ACCESS_KEY_ID`
+#   - E.g., `ck` profile for `AWS_ACCESS_KEY_ID` corresponds to
+#     `CK_AWS_ACCESS_KEY_ID`
 
 
 @functools.lru_cache()

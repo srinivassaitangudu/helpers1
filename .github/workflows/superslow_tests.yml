@@ -61,12 +61,7 @@ jobs:
       - name: Run superslow tests
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AM_AWS_ACCESS_KEY_ID: ${{ secrets.AM_AWS_ACCESS_KEY_ID }}
-          AM_AWS_SECRET_ACCESS_KEY: ${{ secrets.AM_AWS_SECRET_ACCESS_KEY }}
-          AM_AWS_DEFAULT_REGION: ${{ secrets.AM_AWS_DEFAULT_REGION }}
-          AM_ECR_BASE_PATH: ${{ secrets.AM_ECR_BASE_PATH }}
-          AM_AWS_S3_BUCKET: ${{ secrets.AM_AWS_S3_BUCKET }}
-          AM_TELEGRAM_TOKEN: ${{ secrets.AM_TELEGRAM_TOKEN }}
+          
           CK_AWS_ACCESS_KEY_ID: ${{ secrets.CK_AWS_ACCESS_KEY_ID }}
           CK_AWS_SECRET_ACCESS_KEY: ${{ secrets.CK_AWS_SECRET_ACCESS_KEY }}
           CK_AWS_DEFAULT_REGION: ${{ secrets.CK_AWS_DEFAULT_REGION }}
@@ -89,21 +84,6 @@ jobs:
           sha: ${{ github.sha }}
           target_url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-      # TODO(vr): Bring back in #340.
-      # - name: Send Telegram notification for success
-      #   if: ${{ success() && github.ref_name == 'master' }}
-      #   uses: appleboy/telegram-action@master
-      #   with:
-      #     to: ${{ secrets.AM_TG_BUILDBOT_CHATID }}
-      #     token: ${{ secrets.AM_TG_BUILDBOT_TOKEN }}
-      #     message: |
-      #       🎉 Superslow tests succeded at master
-      #       Build failure '${{ github.workflow }}'
-      #       Repo: '${{ github.repository }}'
-      #       Branch: '${{ github.ref_name }}'
-      #       Event: '${{ github.event_name }}'
-      #       https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
       # Notify the team via Telegram in case of failure.
       - name: Send Telegram notification for failure
         # Need to use ref_name as it contains the branch that triggered the
@@ -113,8 +93,8 @@ jobs:
         if: ${{ failure() && github.ref_name == 'master' }}
         uses: appleboy/telegram-action@master
         with:
-          to: ${{ secrets.AM_TG_BUILDBOT_CHATID }}
-          token: ${{ secrets.AM_TG_BUILDBOT_TOKEN }}
+          to: ${{ secrets.CK_TG_BUILDBOT_CHATID }}
+          token: ${{ secrets.CK_TG_BUILDBOT_TOKEN }}
           message: |
             💣 SUPERSLOW TESTS FAILED
             Build failure '${{ github.workflow }}'

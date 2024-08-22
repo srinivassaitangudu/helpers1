@@ -52,7 +52,7 @@ def docker_images_ls_repo(ctx, sudo=False):  # type: ignore
     """
     hlitauti.report_task()
     docker_login(ctx)
-    # TODO(gp): Move this to a var ECR_BASE_PATH="AM_ECR_BASE_PATH" in repo_config.py.
+    # TODO(gp): Move this to a var ECR_BASE_PATH="Ck_ECR_BASE_PATH" in repo_config.py.
     ecr_base_path = hlitauti.get_default_param("CK_ECR_BASE_PATH")
     docker_exec = _get_docker_exec(sudo)
     hlitauti.run(ctx, f"{docker_exec} image ls {ecr_base_path}")
@@ -479,12 +479,7 @@ def _generate_docker_compose_file(
         cap_add:
           - SYS_ADMIN
         environment:
-          - AM_AWS_ACCESS_KEY_ID=$AM_AWS_ACCESS_KEY_ID
-          - AM_AWS_DEFAULT_REGION=$AM_AWS_DEFAULT_REGION
           - AM_AWS_PROFILE=$AM_AWS_PROFILE
-          - AM_AWS_S3_BUCKET=$AM_AWS_S3_BUCKET
-          - AM_AWS_SECRET_ACCESS_KEY=$AM_AWS_SECRET_ACCESS_KEY
-          - AM_ECR_BASE_PATH=$AM_ECR_BASE_PATH
           - AM_ENABLE_DIND={am_enable_dind}
           - AM_FORCE_TEST_FAIL=$AM_FORCE_TEST_FAIL
           - AM_HOST_NAME={am_host_name}
@@ -494,7 +489,6 @@ def _generate_docker_compose_file(
           - AM_REPO_CONFIG_CHECK=True
           # Use inferred path for `repo_config.py`.
           - AM_REPO_CONFIG_PATH=
-          - AM_TELEGRAM_TOKEN=$AM_TELEGRAM_TOKEN
           - CK_AWS_ACCESS_KEY_ID=$CK_AWS_ACCESS_KEY_ID
           - CK_AWS_DEFAULT_REGION=$CK_AWS_DEFAULT_REGION
           - CK_AWS_PROFILE=$CK_AWS_PROFILE

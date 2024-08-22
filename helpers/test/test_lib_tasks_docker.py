@@ -248,43 +248,6 @@ class TestLibTasksGetDockerCmd1(httestlib._LibTasksTestCase):
         """
         self.check(act, exp)
 
-    # TODO(gp): Difference between amp and cmamp.
-    @pytest.mark.skip(
-        reason="It changes a Docker file creating permission issues"
-    )
-    def test_docker_bash5(self) -> None:
-        """
-        Command for running through a shell.
-        """
-        base_image = ""
-        stage = "dev"
-        version = "1.0.0"
-        cmd = "ls && cd .."
-        entrypoint = True
-        print_docker_config = False
-        use_bash = True
-        act = hlitadoc._get_docker_compose_cmd(
-            base_image,
-            stage,
-            version,
-            cmd,
-            entrypoint=entrypoint,
-            print_docker_config=print_docker_config,
-            use_bash=use_bash,
-        )
-        exp = r"""
-        IMAGE=$AM_ECR_BASE_PATH/amp_test:dev-1.0.0 \
-            docker-compose \
-            --file $GIT_ROOT/devops/compose/docker-compose.yml \
-            --env-file devops/env/default.env \
-            run \
-            --rm \
-            --name $USER_NAME.amp_test.app.app \
-            app \
-            bash -c 'ls && cd ..'
-        """
-        self.check(act, exp)
-
     @pytest.mark.skipif(
         not hgit.is_in_amp_as_submodule(), reason="Only run in amp as submodule"
     )
