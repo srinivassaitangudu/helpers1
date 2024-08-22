@@ -3,12 +3,11 @@
 # Install Jupyter packages.
 #
 
-set -ex
+echo "#############################################################################"
+echo "##> $0"
+echo "#############################################################################"
 
-FILE_NAME="devops/docker_build/install_jupyter_extensions.sh"
-echo "#############################################################################"
-echo "##> $FILE_NAME"
-echo "#############################################################################"
+set -ex
 
 # This is run while building Docker after the packages have been executed so we
 # need to activate the environment.
