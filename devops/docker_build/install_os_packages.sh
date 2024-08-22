@@ -87,17 +87,6 @@ fi;
 #apt-get install $APT_GET_OPTS build-essential procps curl file git
 
 ## - Install Github CLI.
-## From https://github.com/cli/cli/blob/trunk/docs/install_linux.md.
-#DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
-#apt-get install $APT_GET_OPTS software-properties-common
-#apt-get install $APT_GET_OPTS dirmngr
-#apt-get install $APT_GET_OPTS gpg-agent
-## GitHub was recently forced to change the key they use for signing
-## details in CmTask #2803.
-#apt-key adv --keyserver keyserver.ubuntu.com --recv-key 23F3D4EA75716059
-#apt-add-repository https://cli.github.com/packages
-#apt-get update
-#apt-get install $APT_GET_OPTS gh
 apt-get install $APT_GET_OPTS wget
 sudo mkdir -p -m 755 /etc/apt/keyrings
 wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
@@ -115,9 +104,6 @@ apt-get install $APT_GET_OPTS libgraphviz-dev
 # This is needed to install dot.
 apt-get install $APT_GET_OPTS graphviz
 
-# This is needed for Postgres DB.
-#apt-get install $APT_GET_OPTS postgresql-client
-
 # Some tools refer to `python` and `pip`, so we create symlinks.
 if [[ ! -e /usr/bin/python ]]; then
   ln -s /usr/bin/python3 /usr/bin/python
@@ -134,10 +120,6 @@ report_disk_usage
 if [[ $CLEAN_UP_INSTALLATION ]]; then
     echo "Cleaning up installation..."
     apt-get purge -y --auto-remove
-#    sudo apt-get clean
-#    sudo apt-get autoclean
-#    sudo apt-get autoremove
-#    sudo rm -rf /tmp/*
     echo "Cleaning up installation... done"
 else
     echo "WARNING: Skipping clean up installation"

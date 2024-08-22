@@ -1,8 +1,8 @@
 # syntax = docker/dockerfile:experimental
 
 # TODO(*): Switch to 24
-# FROM ubuntu:20.04 AS builder
-FROM ubuntu:20.04 AS builder
+FROM ubuntu:24.04 AS builder
+#FROM ubuntu:20.04 AS builder
 
 # Interface for the build arguments.
 # NOTE: The values are encoded as the strings "True" and "False".
