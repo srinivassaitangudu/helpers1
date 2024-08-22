@@ -50,11 +50,6 @@ if [[ 1 == 1 ]]; then
   else
     echo "WARNING: Skipping clean up installation"
   fi;
-  # These packages create problems with poetry so we install them separately.
-  pip install langchain \
-    langchain-community \
-    langchain-openai \
-    langchain-experimental
   pip freeze 2>&1 >/home/pip_list.txt
   #
   if [[ $CLEAN_UP_INSTALLATION ]]; then
