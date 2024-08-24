@@ -1,48 +1,74 @@
-# How to create a super-repo including `helpers`
+# How to create a super-repo with `helpers`
+
+## Add helpers subrepo
 
 - Create the super-repo
+  ```
+  > git clone ...
+  ```
 
 - Add `helpers` as sub-repo
   ```bash
-  > git submodule add <repository-url> <path>
   > git submodule add git@github.com:kaizen-ai/helpers.git helpers_root
   > git submodule init
   > git submodule update
   > git add .gitmodules helpers_root
+  > git commit -am "Add helpers subrepo" && git push
   ```
 
-- Create the `dev_script` dir
+## Create build, setenv, and tmux flow
+
+- Create the `dev_script` dir based off the template from `helpers`
   ``` bash
+  > TEMPLATE_DIR="helpers_root/dev_scripts/thin_client/templates"
+  > ls -1 $TEMPLATE_DIR
+  __init__.py
+  setenv.template.sh
+  tmux.template.py
+
+  # Use a prefix based on the repo name, e.g., `tutorials`, `sports_analytics`.
   > PREFIX="sports_analytics"
-  > DST_DIR="dev_scripts_${PREFIX}/thin_client"
-  > mkdir $SDT_DIR
-  > cp -r helpers_root/dev_scripts/thin_client/setenv.template.sh $DST_DIR/setenv.${PREFIX}.sh
-  > cp -r helpers_root/dev_scripts/thin_client/tmux.template.sh $DST_DIR/tmux.${PREFIX}.sh
+  > DST_DIR="dev_scripts_${PREFIX}/thin_client"; echo $DST_DIR
+  > mkdir -p $DST_DIR
+  > ls helpers_root/dev_scripts/thin_client/templates/
+  > cp -r ${TEMPLATE_DIR}/setenv.template.sh ${DST_DIR}/setenv.${PREFIX}.sh
+  > cp -r ${TEMPLATE_DIR}/tmux.template.py ${DST_DIR}/tmux.${PREFIX}.py
   ```
 
-- It should look like:
+- TODO(gp): When we want to create a new thin env we need to also copy
+  `dev_scripts/thin_client/build.py` and `requirements.txt`. Add instructions
+
+- The resulting `dev_script` should look like:
   ```bash
-  > ls -1 dev_scripts_sports_analytics/thin_client/*
+  > ls -1 $DST_DIR
   dev_scripts_sports_analytics/thin_client/setenv.sports_analytics.sh
   dev_scripts_sports_analytics/thin_client/tmux.sports_analytics.py
   ```
+
 - Customize the `dev_scripts` dir
-  - You need to decide if a new thin environment is needed or one can be reused
-    (e.g., `helpers` one)
+  ```bash
+  > vi $DST_DIR/*
+  ```
+  - Customize `DIR_TAG`
+  - Set `VENV_TAG` to create a new thin environment or reuse an existing one
+    (e.g., `helpers`)
 
 ## How to test
 
 - Make sure the setenv works
   ```bash
-  > source dev_scripts_sports_analytics/thin_client/setenv.sports_analytics.sh
+  > source ${TEMPLATE_DIR}/setenv.template.sh ${DST_DIR}/setenv.${PREFIX}.sh
+  # E.g., `source dev_scripts_sports_analytics/thin_client/setenv.sports_analytics.sh`
   ```
 
 ## Maintain the files in sync with the template
 
 - Keep files in sync
   ```bash
-  > vimdiff dev_scripts_sports_analytics/thin_client/setenv.sports_analytics.sh helpers_root/dev_scripts/thin_client/setenv.helpers.sh
-  > vimdiff dev_scripts_sports_analytics/thin_client/setenv.sports_analytics.sh helpers_root/dev_scripts/thin_client/templates/setenv.template.sh
+  > vimdiff ${TEMPLATE_DIR}/setenv.template.sh ${DST_DIR}/setenv.${PREFIX}.sh
+  > vimdiff ${TEMPLATE_DIR}/tmux.template.py ${DST_DIR}/tmux.${PREFIX}.py
+  > vimdiff ${TEMPLATE_DIR}/setenv.template.sh dev_scripts/thin_client/setenv.helpers.sh
+  > vimdiff ${TEMPLATE_DIR}/tmux.template.py dev_scripts/thin_client/tmux.helpers.py
   ```
 
 ## Tmux links
