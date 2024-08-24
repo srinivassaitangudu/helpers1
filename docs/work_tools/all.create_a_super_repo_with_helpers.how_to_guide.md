@@ -53,17 +53,34 @@
   - Set `VENV_TAG` to create a new thin environment or reuse an existing one
     (e.g., `helpers`)
 
-## How to test
+## How to test setenv
 
 - Make sure the setenv works
   ```bash
-  > source ${TEMPLATE_DIR}/setenv.template.sh ${DST_DIR}/setenv.${PREFIX}.sh
+  > source ${DST_DIR}/setenv.${PREFIX}.sh
   # E.g., `source dev_scripts_sports_analytics/thin_client/setenv.sports_analytics.sh`
+  ```
+
+## Tmux links
+
+- Create the global link
+  ```bash
+  > ${DST_DIR}/tmux.${PREFIX}.py --create_global_link
+  ```
+
+- Create the tmux session
+  ```bash
+  > ${DST_DIR}/tmux.${PREFIX}.py --index 1 --force_restart
   ```
 
 ## Maintain the files in sync with the template
 
-- Keep files in sync
+- Keep files in sync between `helpers`, template, and a super-repo
+  ```bash
+  > ${TEMPLATE_DIR}/merge.sh
+  ```
+
+- The script conceptually does:
   ```bash
   > vimdiff ${TEMPLATE_DIR}/setenv.template.sh ${DST_DIR}/setenv.${PREFIX}.sh
   > vimdiff ${TEMPLATE_DIR}/tmux.template.py ${DST_DIR}/tmux.${PREFIX}.py
@@ -71,32 +88,30 @@
   > vimdiff ${TEMPLATE_DIR}/tmux.template.py dev_scripts/thin_client/tmux.helpers.py
   ```
 
-## Tmux links
-
-- Create the global link
-  ```bash
-  > dev_scripts_sports_analytics/thin_client/tmux.sports_analytics.py --create_global_link
-  ```
-
-- Create the tmux session
-  ```bash
-  > dev_scripts_sports_analytics/thin_client/tmux.sports_analytics.py --index 1 --force_restart
-  ```
-
 ## Create files
 
-- Some files need to be copied from `helpers` to the root of the super-repo
+- Some files need to be copied from `helpers` to the root of the super-repo to
+  configure various tools (e.g., dev container workflow, `pytest`, `invoke`)
   - `changelog.txt`: this is copied from the repo that builds the used container or
     started from scratch for a new container
   - `conftest.py`: configure `pytest`
-  - `invoke.yaml`: configure `invoke`
   - `pytest.ini`: configure `pytest` preferences
+  - `invoke.yaml`: configure `invoke`
   - `repo_config.py`: stores information about this specific repo (e.g., name, used
     container)
     - This needs to be modified
   - `tasks.py`: the `invoke` tasks available in this container
     - This needs to be modified
-  - TODO(gp): Some should be links to `helpers`
+  - TODO(gp): Some (e.g., `conftest.py`, `invoke.yaml`) should be links to `helpers`
+
+  ```bash
+  > vim changelog.txt conftest.py invoke.yaml pytest.ini repo_config.py tasks.py
+  ```
+
+- You can run to copy/diff the files
+  ```bash
+  > ${TEMPLATE_DIR}/merge.sh
+  ```
 
 ## Build a container for a super-repo
 
