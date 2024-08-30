@@ -861,7 +861,7 @@ def run_coverage_report(  # type: ignore
 # #############################################################################
 
 
-# TODO(gp): Consolidate the code from dev_scripts/testing here.
+# TODO(gp): Consolidate the code from dev_scripts_helpers/testing here.
 
 
 @task

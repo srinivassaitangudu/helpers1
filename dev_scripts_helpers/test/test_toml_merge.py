@@ -6,7 +6,7 @@ if False:
 
     import toml
 
-    import dev_scripts.coding_tools.toml_merge as dsctomer
+    import dev_scripts_helpers.coding_tools.toml_merge as dsctomer
     import helpers.hunit_test as hunitest
 
 
