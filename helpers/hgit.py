@@ -548,7 +548,9 @@ def _get_repo_short_to_full_name(include_host_name: bool) -> Dict[str, str]:
     repo_map = {
         "amp": "alphamatic/amp",
         "dev_tools": "kaizen-ai/dev_tools",
-        "helpers": "kaizen-ai/helpers",
+        # TODO(Juraj, GP): this was enabled but it breaks
+        # inovke docker_bash
+        #"helpers": "kaizen-ai/helpers",
     }
     if include_host_name:
         host_name = "github.com"
