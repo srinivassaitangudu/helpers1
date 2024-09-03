@@ -202,6 +202,7 @@ def has_dind_support() -> bool:
     _print("cmd=%s -> rc=%s" % (cmd, rc))
     # dind is supported on both Mac and GH Actions.
     check_repo = os.environ.get("AM_REPO_CONFIG_CHECK", "True") != "False"
+    #TODO(Juraj): HelpersTask16.
     #if check_repo:
     #    if hserver.is_inside_ci():
     #        # Docker-in-docker is needed for GH actions. For all other builds is optional.
