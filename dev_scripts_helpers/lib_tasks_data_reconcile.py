@@ -25,7 +25,7 @@ to run outside a Docker container:
 
 Import as:
 
-import dev_scripts.lib_tasks_data_reconcile as dsltdare
+import dev_scripts_helpers.lib_tasks_data_reconcile as dsltdare
 """
 
 import logging

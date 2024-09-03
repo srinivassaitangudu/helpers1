@@ -11,7 +11,7 @@ Run a notebook given a config or a list of configs.
 
 Import as:
 
-import dev_scripts.notebooks.run_notebook as dsnoruno
+import dev_scripts_helpers.notebooks.run_notebook as dsnoruno
 """
 
 import argparse

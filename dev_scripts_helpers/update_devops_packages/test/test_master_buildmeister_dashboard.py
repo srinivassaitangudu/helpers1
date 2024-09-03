@@ -5,7 +5,7 @@ if False:
     import pytest
 
     import core.config as cconfig
-    import dev_scripts.notebooks.run_notebook_test_case as dsnrnteca
+    import dev_scripts_helpers.notebooks.run_notebook_test_case as dsnrnteca
     import helpers.hgit as hgit
     import helpers.hserver as hserver
 
