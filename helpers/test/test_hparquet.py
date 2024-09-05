@@ -17,11 +17,8 @@ import helpers.hparquet as hparque
 import helpers.hprint as hprint
 import helpers.hs3 as hs3
 import helpers.hunit_test as hunitest
-#TODO(Juraj): HelpersTask1.
-#import im_v2.common.test as imvct
 
 _LOG = logging.getLogger(__name__)
-
 
 # Most of these unit tests are taken from
 # `amp/helpers/notebooks/gallery_parquet.ipynb`
@@ -1007,7 +1004,6 @@ class TestToPartitionedDataset(hunitest.TestCase):
     not henv.execute_repo_config_code("is_CK_S3_available()"),
     reason="Run only if CK S3 is available",
 )
-@pytest.mark.skip(reason="TODO(Juraj): HelpersTask1")
 class TestListAndMergePqFiles(hmoto.S3Mock_TestCase):
     def generate_test_data(self) -> hs3.AwsProfile:
         """
@@ -1020,7 +1016,7 @@ class TestListAndMergePqFiles(hmoto.S3Mock_TestCase):
         test_dir = self.get_scratch_space()
         partition_mode = "by_year_month"
         custom_partition_cols = "asset,year,month"
-        imvct.generate_parquet_files(
+        hparque.generate_parquet_files(
             start_date,
             end_date,
             assets,
