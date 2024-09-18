@@ -113,7 +113,7 @@ class Test_flat_config_set1(hunitest.TestCase):
         hello: world
         foo: [1, 2, 3]
         # code=
-        Config([('hello', 'world'), ('foo', [1, 2, 3])])
+        Config({'hello': 'world', 'foo': [1, 2, 3]})
         """
         self.assert_equal(act, exp, fuzzy_match=True)
 
@@ -204,22 +204,22 @@ class Test_flat_config_get1(hunitest.TestCase):
         # not.
         # _________________ Test_flat_config_get1.test_non_existing_key2 _________________
         # Traceback (most recent call last):
-        #   File "/app/amp/core/config/config_.py", line 163, in __getitem__
+        #   File "/app/amp/config_root/config/config_.py", line 163, in __getitem__
         #     ret = self._get_item(key, level=level)
-        #   File "/app/amp/core/config/config_.py", line 626, in _get_item
+        #   File "/app/amp/config_root/config/config_.py", line 626, in _get_item
         #     raise KeyError(msg)
         # KeyError: "key='nrows_tmp' not in:\n  nrows: 10000\n  nrows2: hello"
         #
         # During handling of the above exception, another exception occurred:
         #
         # Traceback (most recent call last):
-        #   File "/app/amp/core/config/test/test_config.py", line 189, in test_non_existing_key2
+        #   File "/app/amp/config_root/config/test/test_config.py", line 189, in test_non_existing_key2
         #     config.get("nrows_tmp")
-        #   File "/app/amp/core/config/config_.py", line 372, in get
+        #   File "/app/amp/config_root/config/config_.py", line 372, in get
         #     raise e
-        #   File "/app/amp/core/config/config_.py", line 361, in get
+        #   File "/app/amp/config_root/config/config_.py", line 361, in get
         #     ret = self.__getitem__(
-        #   File "/app/amp/core/config/config_.py", line 173, in __getitem__
+        #   File "/app/amp/config_root/config/config_.py", line 173, in __getitem__
         #     raise e
         # KeyError: '"key=\'nrows_tmp\' not in:\n  nrows: 10000\n  nrows2: hello"\nconfig=\n  nrows: 10000\n  nrows2: hello'
         with self.assertRaises(KeyError) as cm:
@@ -747,7 +747,7 @@ class Test_nested_config_misc1(hunitest.TestCase):
         # Check.
         act = config.to_python()
         exp = r"""
-        Config([('nrows', 10000), ('read_data', Config([('file_name', 'foo_bar.txt'), ('nrows', 999)])), ('single_val', 'hello'), ('zscore', Config([('style', 'gaz'), ('com', 28)]))])
+        Config({'nrows': 10000, 'read_data': Config({'file_name': 'foo_bar.txt', 'nrows': 999}), 'single_val': 'hello', 'zscore': Config({'style': 'gaz', 'com': 28})})
         """
         self.assert_equal(act, exp, fuzzy_match=True)
 
@@ -769,7 +769,7 @@ class Test_nested_config_misc1(hunitest.TestCase):
           style: gaz
           com: 28
         # code=
-        Config([('nrows', 10000), ('read_data', Config([('file_name', 'foo_bar.txt'), ('nrows', 999)])), ('single_val', 'hello'), ('zscore', Config([('style', 'gaz'), ('com', 28)]))])
+        Config({'nrows': 10000, 'read_data': Config({'file_name': 'foo_bar.txt', 'nrows': 999}), 'single_val': 'hello', 'zscore': Config({'style': 'gaz', 'com': 28})})
         """
         self.assert_equal(act, exp, fuzzy_match=True)
 
@@ -1609,9 +1609,9 @@ class Test_to_dict2(hunitest.TestCase):
         act = pprint.pformat(flattened)
         exp = r"""
         OrderedDict([('read_data',
-                    OrderedDict([('file_name', 'foo_bar.txt'), ('nrows', 999)])),
-                    ('single_val', 'hello'),
-                    ('zscore', )])
+            OrderedDict({'file_name': 'foo_bar.txt', 'nrows': 999})),
+            ('single_val', 'hello'),
+            ('zscore', )])
         """
         self.assert_equal(act, exp, fuzzy_match=True)
 
@@ -1623,8 +1623,8 @@ class Test_to_dict2(hunitest.TestCase):
         act = pprint.pformat(flattened)
         exp = r"""
         OrderedDict([('read_data',
-              OrderedDict([('file_name', 'foo_bar.txt'), ('nrows', 999)])),
-             ('single_val', 'hello')])
+            OrderedDict({'file_name': 'foo_bar.txt', 'nrows': 999})),
+            ('single_val', 'hello')])
         """
         self.assert_equal(act, exp, fuzzy_match=True)
 
@@ -1998,7 +1998,7 @@ class Test_to_string(hunitest.TestCase):
         actual = config.to_string(mode)
         actual = remove_line_numbers(actual)
         #
-        expected = r"""key1 (marked_as_used=True, writer=$GIT_ROOT/core/config/test/test_config.py::***::test4, val_type=str): value2
+        expected = r"""key1 (marked_as_used=True, writer=$GIT_ROOT/config_root/config/test/test_config.py::***::test4, val_type=str): value2
         key2 (marked_as_used=False, writer=None, val_type=config_root.config.config_.Config):
         key3 (marked_as_used=False, writer=None, val_type=config_root.config.config_.Config):
         key4 (marked_as_used=False, writer=None, val_type=config_root.config.config_.Config):
@@ -2061,7 +2061,7 @@ class Test_mark_as_used1(hunitest.TestCase):
         )
         #
         expected_config = r"""key1 (marked_as_used=False, writer=None, val_type=int): 1
-        key2 (marked_as_used=True, writer=$GIT_ROOT/core/config/test/test_config.py::***::test1, val_type=str): value2"""
+        key2 (marked_as_used=True, writer=$GIT_ROOT/config_root/config/test/test_config.py::***::test1, val_type=str): value2"""
         self._helper(test_config, expected_config)
 
     def test2(self) -> None:
@@ -2080,7 +2080,7 @@ class Test_mark_as_used1(hunitest.TestCase):
         # Test marking the subconfig.
         expected_config = r"""key1 (marked_as_used=False, writer=None, val_type=int): 1
         key2 (marked_as_used=False, writer=None, val_type=config_root.config.config_.Config):
-        key3 (marked_as_used=True, writer=$GIT_ROOT/core/config/test/test_config.py::***::test2, val_type=str): value3"""
+        key3 (marked_as_used=True, writer=$GIT_ROOT/config_root/config/test/test_config.py::***::test2, val_type=str): value3"""
         self._helper(test_nested_config, expected_config)
         self._helper(test_nested_config, expected_config)
 
@@ -2102,7 +2102,7 @@ class Test_mark_as_used1(hunitest.TestCase):
         expected_config = r"""key1 (marked_as_used=False, writer=None, val_type=int): 1
         key2 (marked_as_used=False, writer=None, val_type=config_root.config.config_.Config):
         key3 (marked_as_used=False, writer=None, val_type=config_root.config.config_.Config):
-        key4 (marked_as_used=True, writer=$GIT_ROOT/core/config/test/test_config.py::***::test3, val_type=str): value3"""
+        key4 (marked_as_used=True, writer=$GIT_ROOT/config_root/config/test/test_config.py::***::test3, val_type=str): value3"""
         self._helper(test_nested_config, expected_config)
 
     def test4(self) -> None:
@@ -2119,7 +2119,7 @@ class Test_mark_as_used1(hunitest.TestCase):
         )
         #
         expected_config = r"""key1 (marked_as_used=False, writer=None, val_type=int): 1
-        key2 (marked_as_used=True, writer=$GIT_ROOT/core/config/test/test_config.py::***::test4, val_type=list): ['value2', 2]"""
+        key2 (marked_as_used=True, writer=$GIT_ROOT/config_root/config/test/test_config.py::***::test4, val_type=list): ['value2', 2]"""
         self._helper(test_config, expected_config)
 
     def _helper(self, actual_config: cconfig.Config, expected_config: str):

@@ -5,7 +5,7 @@ import config_root.config.config_ as crococon
 """
 
 # This file is called `config_.py` and not `config.py` to avoid circular
-# imports from the fact that also the package `core/config` can be imported as
+# imports from the fact that also the package `config_root/config` can be imported as
 # `import config`.
 
 import collections
@@ -195,10 +195,10 @@ class _ConfigWriterInfo:
         ```
         File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
             method()
-        File "/app/core/config/test/test_config.py", line 2037, in test4
+        File "/app/config_root/config/test/test_config.py", line 2037, in test4
             actual_value = test_config.get_and_mark_as_used("key2")
         ...
-        File "/app/core/config/config_.py", line 188, in _get_full_traceback
+        File "/app/config_root/config/config_.py", line 188, in _get_full_traceback
             return hintros.stacktrace_to_str()
         File "/app/helpers/hintrospection.py", line 254, in stacktrace_to_str
             txt = traceback.format_stack()
@@ -227,14 +227,14 @@ class _ConfigWriterInfo:
         # Due to abundance of internal recursive calls, we want to get the first
         # call outside of the current module. E.g. for the stacktrace:
         # ```
-        # FrameInfo(frame=<frame at 0x7fdce4734230, file '/app/core/config/test/test_config.py', line 2037, code test4>, filename='/app/core/config/test/test_config.py', lineno=2037, function='test4', code_context=['        actual_value = test_config.get_and_mark_as_used("key2")\n'], index=0)
-        # FrameInfo(frame=<frame at 0x4cafb50, file '/app/core/config/config_.py', line 1198, code _get_item>, filename='/app/core/config/config_.py', lineno=1198, function='_get_item', code_context=['        ret = self._config.__getitem__(key, mark_key_as_used=mark_key_as_used)  # type: ignore\n'], index=0)
-        # FrameInfo(frame=<frame at 0x7fdce471edd0, file '/app/core/config/config_.py', line 475, code _mark_as_used>, filename='/app/core/config/config_.py', lineno=475, function='_mark_as_used', code_context=['            writer = _ConfigWriterInfo()\n'], index=0)
-        # FrameInfo(frame=<frame at 0x4d0cd70, file '/app/core/config/config_.py', line 178, code __init__>, filename='/app/core/config/config_.py', lineno=178, function='__init__', code_context=['        self._shorthand_caller = self._get_shorthand_caller()\n'], index=0)
-        # FrameInfo(frame=<frame at 0x7fdce471e230, file '/app/core/config/config_.py', line 210, code _get_shorthand_caller>, filename='/app/core/config/config_.py', lineno=207, function='_get_shorthand_caller', code_context=['        stack = inspect.stack()\n'], index=0)
+        # FrameInfo(frame=<frame at 0x7fdce4734230, file '/app/config_root/config/test/test_config.py', line 2037, code test4>, filename='/app/config_root/config/test/test_config.py', lineno=2037, function='test4', code_context=['        actual_value = test_config.get_and_mark_as_used("key2")\n'], index=0)
+        # FrameInfo(frame=<frame at 0x4cafb50, file '/app/config_root/config/config_.py', line 1198, code _get_item>, filename='/app/config_root/config/config_.py', lineno=1198, function='_get_item', code_context=['        ret = self._config.__getitem__(key, mark_key_as_used=mark_key_as_used)  # type: ignore\n'], index=0)
+        # FrameInfo(frame=<frame at 0x7fdce471edd0, file '/app/config_root/config/config_.py', line 475, code _mark_as_used>, filename='/app/config_root/config/config_.py', lineno=475, function='_mark_as_used', code_context=['            writer = _ConfigWriterInfo()\n'], index=0)
+        # FrameInfo(frame=<frame at 0x4d0cd70, file '/app/config_root/config/config_.py', line 178, code __init__>, filename='/app/config_root/config/config_.py', lineno=178, function='__init__', code_context=['        self._shorthand_caller = self._get_shorthand_caller()\n'], index=0)
+        # FrameInfo(frame=<frame at 0x7fdce471e230, file '/app/config_root/config/config_.py', line 210, code _get_shorthand_caller>, filename='/app/config_root/config/config_.py', lineno=207, function='_get_shorthand_caller', code_context=['        stack = inspect.stack()\n'], index=0)
         # ```
         # We select the first one with a different file, i.e.:
-        # `FrameInfo(frame=<frame at 0x7fdce4734230, file '/app/core/config/test/test_config.py', line 2037, code test4>, filename='/app/core/config/test/test_config.py', lineno=2037, function='test4', code_context=['        actual_value = test_config.get_and_mark_as_used("key2")\n'], index=0)`
+        # `FrameInfo(frame=<frame at 0x7fdce4734230, file '/app/config_root/config/test/test_config.py', line 2037, code test4>, filename='/app/config_root/config/test/test_config.py', lineno=2037, function='test4', code_context=['        actual_value = test_config.get_and_mark_as_used("key2")\n'], index=0)`
         #
         caller = next(call for call in stack if call.filename != filename)
         latest_outside_caller = (
@@ -592,8 +592,12 @@ class Config:
         # Initialize from array.
         # TODO(gp): This might be a separate constructor, but it gives problems
         #  with `Config.from_python()`.
+        _LOG.info("Juraj: array=%s", array)
+        _LOG.info("Juraj: array_type=%s", type(array))
         if array is not None:
-            for key, val in array:
+            #TODO(Juraj): The variable name is not fitting now
+            # In Python 3.12 `from_python` now returns Dict.
+            for key, val in array.items():
                 hdbg.dassert_isinstance(key, ScalarKeyValidTypes)
                 self.__setitem__(
                     key, val, update_mode=update_mode, clobber_mode=clobber_mode
