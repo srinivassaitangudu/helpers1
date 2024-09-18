@@ -34,7 +34,7 @@ import re
 
 from invoke import task
 
-import core.config as cconfig
+import config_root.config as cconfig
 import helpers.hdbg as hdbg
 import helpers.hio as hio
 import oms.lib_tasks_reconcile as olitarec

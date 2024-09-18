@@ -9,7 +9,7 @@ if False:
     import pandas as pd
 
     # TODO(Juraj): HelpersTask1.
-    import core.config as cconfig
+    import config_root.config as cconfig
     import helpers.hio as hio
     import helpers.hplayback as hplayba
     import helpers.hsystem as hsystem

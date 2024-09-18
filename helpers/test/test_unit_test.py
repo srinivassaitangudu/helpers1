@@ -1263,12 +1263,12 @@ class Test_purify_line_number(hunitest.TestCase):
         Check that the text is purified from line numbers correctly.
         """
         txt = """
-        dag_config (marked_as_used=False, writer=None, val_type=core.config.config_.Config):
+        dag_config (marked_as_used=False, writer=None, val_type=config_root.config.config_.Config):
         in_col_groups (marked_as_used=True, writer=$GIT_ROOT/dataflow/system/system_builder_utils.py::286::apply_history_lookback, val_type=list): [('close',), ('volume',)]
         out_col_group (marked_as_used=True, writer=$GIT_ROOT/dataflow/system/system_builder_utils.py::286::apply_history_lookback, val_type=tuple): ()
         """
         expected = r"""
-        dag_config (marked_as_used=False, writer=None, val_type=core.config.config_.Config):
+        dag_config (marked_as_used=False, writer=None, val_type=config_root.config.config_.Config):
         in_col_groups (marked_as_used=True, writer=$GIT_ROOT/dataflow/system/system_builder_utils.py::$LINE_NUMBER::apply_history_lookback, val_type=list): [('close',), ('volume',)]
         out_col_group (marked_as_used=True, writer=$GIT_ROOT/dataflow/system/system_builder_utils.py::$LINE_NUMBER::apply_history_lookback, val_type=tuple): ()
         """
