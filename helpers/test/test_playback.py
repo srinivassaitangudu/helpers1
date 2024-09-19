@@ -56,7 +56,6 @@ class TestJsonRoundtrip1(hunitest.TestCase):
 # TestPlaybackInputOutput1
 # #############################################################################
 
-@pytest.mark.skip(reason="TODO(Juraj): HelpersTask1")
 class TestPlaybackInputOutput1(hunitest.TestCase):
     """
     Freeze the output of Playback.
