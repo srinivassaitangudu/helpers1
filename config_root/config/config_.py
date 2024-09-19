@@ -592,12 +592,11 @@ class Config:
         # Initialize from array.
         # TODO(gp): This might be a separate constructor, but it gives problems
         #  with `Config.from_python()`.
-        _LOG.info("Juraj: array=%s", array)
-        _LOG.info("Juraj: array_type=%s", type(array))
         if array is not None:
             #TODO(Juraj): The variable name is not fitting now
             # In Python 3.12 `from_python` now returns Dict.
-            for key, val in array.items():
+            iterable = array.items() if isinstance(array, dict) else array
+            for key, val in iterable:
                 hdbg.dassert_isinstance(key, ScalarKeyValidTypes)
                 self.__setitem__(
                     key, val, update_mode=update_mode, clobber_mode=clobber_mode
