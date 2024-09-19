@@ -38,7 +38,7 @@ from typing import Any, Dict
 import pandas as pd
 from invoke import task
 
-import core.config as cconfig
+import config_root.config as cconfig
 import data_schema.dataset_schema_utils as dsdascut
 import dev_scripts_helpers.lib_tasks_run_model_experiment_notebooks as dsltrmeno
 import helpers.hdbg as hdbg
