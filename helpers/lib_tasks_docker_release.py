@@ -14,7 +14,6 @@ from invoke import task
 # We want to minimize the dependencies from non-standard Python packages since
 # this code needs to run with minimal dependencies and without Docker.
 import helpers.hdbg as hdbg
-import helpers.hdocker as hdocker
 import helpers.hgit as hgit
 import helpers.hs3 as hs3
 import helpers.hsystem as hsystem
@@ -145,7 +144,7 @@ def docker_build_local_image(  # type: ignore
     opts = "--no-cache" if not cache else ""
     build_args = [
         ("AM_CONTAINER_VERSION", dev_version),
-        ("INSTALL_DIND", False),
+        ("INSTALL_DIND", True),
         ("POETRY_MODE", poetry_mode),
         ("CLEAN_UP_INSTALLATION", cleanup_installation),
     ]
@@ -206,21 +205,23 @@ def docker_build_local_image(  # type: ignore
         hlitauti.run(ctx, cmd)
     # Retrieve the package files, if present.
     if poetry_mode == "update":
-        # TODO(gp): Not sure it works properly for multi-arch build, since on
-        # different platforms the generated poetry.lock might be different.
-        container_name = "tmp.lib_tasks_docker_release"
-        if hdocker.container_exists(container_name):
-            hdocker.container_rm(container_name)
-        cmd = f"docker run -d --name {container_name} {image_local}"
-        _, container_id = hsystem.system_to_string(cmd)
-        src_dir = f"{container_name}/install"
-        dst_dir = "devops/docker_build"
-        cmd = f"docker cp {src_dir}/poetry.lock {dst_dir}/poetry.lock.out"
+        # TODO(gp): For some reason we can't use more than one bash command in
+        # docker_cmd.
+        cmd = "cp -f /install/poetry.lock.out /install/pip_list.txt ."
+        opts = [
+            "--stage local",
+            f"--version {version}",
+            f"--cmd '{cmd}'",
+            ]
+        opts.append("--skip-pull")
+        cmd = "invoke docker_cmd " + ' '.join(opts)
         hlitauti.run(ctx, cmd)
-        cmd = f"docker cp {src_dir}/pip_list.txt {dst_dir}/pip_list.txt"
+        # The destination dir is always in the same relative position.
+        dst_dir = "./devops/docker_build"
+        hdbg.dassert_dir_exists(dst_dir)
+        cmd = f"cp -f poetry.lock.out {dst_dir}/poetry.lock"
         hlitauti.run(ctx, cmd)
-        # Kill the temporary container.
-        cmd = f"docker rm --force {container_id}"
+        cmd = f"cp -f pip_list.txt {dst_dir}/pip_list.txt"
         hlitauti.run(ctx, cmd)
     # Check image and report stats.
     cmd = f"docker image ls {image_local}"
