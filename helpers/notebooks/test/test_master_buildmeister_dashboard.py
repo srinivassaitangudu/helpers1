@@ -25,6 +25,10 @@ class Test_Master_buildmeister_dashboard_notebook(
         not hserver.is_inside_ci(),
         reason="No access to data from `lemonade` repo locally",
     )
+    @pytest.mark.skipif(
+        hgit.is_in_helpers_as_supermodule(),
+        reason="Run only in helpers as sub module as it requires notebook from cmamp repo.",
+    )    
     @pytest.mark.superslow("~42 sec.")
     def test1(self) -> None:
         amp_dir = hgit.get_amp_abs_path()
