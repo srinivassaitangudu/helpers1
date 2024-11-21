@@ -108,6 +108,8 @@ def _encrypt_input_dir(
     work_dir = os.getcwd()
     docker_output_dir = "/app"
     mount = f"type=bind,source={work_dir},target={docker_output_dir}"
+    # Use `-i` option to store the runtime folder inside the target dir, this way we do not
+    # need to tweak init files.
     encryption_flow = f"pyarmor gen -i --recursive {input_dir} --output {output_dir}"
     if docker_build_target is not None:
         docker_cmd = f"docker run --rm -it --user {user_id}:{group_id} --platform {docker_build_target} --workdir {docker_output_dir} --mount {mount} {docker_image_tag} {encryption_flow}"
@@ -315,6 +317,10 @@ def _main(parser: argparse.ArgumentParser) -> None:
     _encrypt_input_dir(
         input_dir, output_dir, args.build_target, args.docker_image_tag
     )
+    # TODO(Grisha): in `pyarmor v9.x` tweaking init files does not seem necessary, 
+    # make sure to utilize `-i` option when running `pyarmor gen ...` this way it 
+    # will put the runtime folder inside the target dir and this step is not needed;
+    # keeping it here just as a reference.
     # 3) Tweak `__init__.py` file.
     # _LOG.info("\n" + hprint.frame("3) Fix init files"))
     # _tweak_init(output_dir)
@@ -335,23 +341,14 @@ def _main(parser: argparse.ArgumentParser) -> None:
         _, release_git_root = hsystem.system_to_string(
             f"cd {args.release_dir}; git rev-parse --show-toplevel"
         )
-        # - Remove the old files from Git.
-        # E.g., cd /data/saggese/src/orange1; git rm -rf --ignore-unmatch dataflow_lemonade/encrypted_pipeline
-        release_base_dir = os.path.relpath(args.release_dir, release_git_root)
-        # Add `/*` so that the cmd does not remove the parent folder, only the content inside.
-        # _, output = hsystem.system_to_string(
-        #     f"cd {release_git_root}; git rm -rf --ignore-unmatch {release_base_dir}"
-        # )
-        # # TODO(Grisha): sometimes it completely remove the folder and then we cannot copy to it,
-        # # debug and find a better fix.
-        # hio.create_dir(release_base_dir, incremental=True)
         # - Copy the encrypted dir in the target dir.
-        # E.g., cp -r /data/saggese/src_vc/lemonade1/dataflow_lemonade/encrypted_pipelines /data/saggese/src/orange1/dataflow_lemonade/encrypted_pipeline
         input_dir_tmp = os.path.abspath(output_dir)
         # We need to move the encrypted code in the same place as the original
         # code in the release tree.
         output_dir_tmp = os.path.abspath(args.release_dir)
-        # Add `/*` so that the cmd copies only the content, not the folder itself.
+        # Add trailing slashes so that the machine treats them as folders.
+        # Use the `--delete` option to delete all files from target that are not in source; we
+        # assume that the source repo contains the latest state.
         _, output = hsystem.system_to_string(f"rsync -a --delete {input_dir_tmp}/ {output_dir_tmp}/")
         # ls /data/saggese/src_vc/lemonade1/dataflow_lemonade/encrypted_pipelines
         cmd = f"ls {input_dir_tmp}"
@@ -361,6 +358,7 @@ def _main(parser: argparse.ArgumentParser) -> None:
         hsystem.system(cmd, suppress_output=False)
         # - Add the encrypted files back to Git.
         # E.g., cd /data/saggese/src/orange1; git add dataflow_lemonade/encrypted_pipeline
+        release_base_dir = os.path.relpath(args.release_dir, release_git_root)
         _, output = hsystem.system_to_string(
             f"cd {release_git_root}; git add {release_base_dir}"
         )
