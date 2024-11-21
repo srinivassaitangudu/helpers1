@@ -326,14 +326,14 @@ def _main(parser: argparse.ArgumentParser) -> None:
     # _tweak_init(output_dir)
     # 4) Test encrypted model.
     if args.test:
-        _LOG.info("\n" + hprint.frame("4) Test encrypted model"))
+        _LOG.info("\n" + hprint.frame("3) Test encrypted model"))
         model_dag_builder_file_enc = os.path.join(
             output_dir, args.model_dag_builder_file
         )
         _test_model(args.model_dag_builder, model_dag_builder_file_enc)
     # 5) Release encrypted model.
     if args.release_dir:
-        _LOG.info("\n" + hprint.frame("5) Release encrypted model"))
+        _LOG.info("\n" + hprint.frame("4) Release encrypted model"))
         # Copy the encrypted files to the release dir and add them to Git,
         # removing the old files.
         hio.create_dir(args.release_dir, incremental=True)
