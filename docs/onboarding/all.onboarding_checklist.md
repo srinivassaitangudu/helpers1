@@ -234,7 +234,7 @@
 - [ ] **Team member**: Add your usual working hours by going to
       calendar.google.com (using your corporate email), heading to the settings
       section by clicking the gear icon on top right
-  - <img src="https://github.com/causify-ai/helpers/tree/master/docs/onboarding/figs/google_calendar/Fig1_google_calendar_working_hour.png"
+  - <img src="https://github.com/causify-ai/helpers/blob/master/docs/onboarding/figs/google_calendar/Fig1_google_calendar_working_hour.png"
     style="width:6in" />
 
 - [ ] **Team member**: Confirm you can access the anonymous form to ask anything
