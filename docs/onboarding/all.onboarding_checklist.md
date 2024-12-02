@@ -264,7 +264,7 @@
     ```
   - [ ] Run a jupyter notebook
     - Follow this
-      [instruction](https://github.com/causify-ai/helpers/blob/master//docs/work_tools/all.visual_studio_code.how_to_guide.md#how-to-access-the-jupyter-server-running-on-the-remote-server-through-your-local-machine)
+      [instruction](https://github.com/causify-ai/helpers/blob/master/docs/work_tools/all.visual_studio_code.how_to_guide.md#how-to-access-the-jupyter-server-running-on-the-remote-server-through-your-local-machine)
       on how to access the Jupyter server running on the remote server through
       your local machine
     ```
@@ -288,7 +288,7 @@
 - [ ] **Team member**: exercise all the important parts of the systems
   - [ ] Create a GitHub issue
   - [ ] Get familiar with the
-        [GH doc](https://github.com/causify-ai/cmamp/blob/master/docs/work_organization/all.use_github_and_zenhub.how_to_guide.md)
+        [GH doc](https://github.com/causify-ai/helpers/blob/master/docs/work_organization/all.use_github_and_zenhub.how_to_guide.md)
   - [ ] Check out the code on server
   - [ ] Run all regressions on server
   - [ ] Create a branch
