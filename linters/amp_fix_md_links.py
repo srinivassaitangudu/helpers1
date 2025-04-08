@@ -17,6 +17,7 @@ import helpers.hio as hio
 import helpers.hmarkdown as hmarkdo
 import helpers.hparser as hparser
 import helpers.hstring as hstring
+import helpers.repo_config_utils as hrecouti
 import linters.action as liaction
 import linters.utils as liutils
 
@@ -133,6 +134,15 @@ def _check_md_link_format(
         if "blob/master" not in link:
             # The link is not to a file (but, for example, to an issue);
             # update is not needed.
+            return line, warnings
+        link_repo_short_name = link.split("/blob/master")[0].split(
+            "/causify-ai/"
+        )[-1]
+        if (
+            hrecouti.get_repo_config().get_repo_short_name()
+            != link_repo_short_name
+        ):
+            # The link points to another repo; update is not needed.
             return line, warnings
         # Leave only the path to the file in the link.
         link = link.split("blob/master")[-1]
