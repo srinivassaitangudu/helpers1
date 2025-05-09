@@ -6,9 +6,13 @@ import helpers.hopenai as hopenai
 
 import datetime
 import functools
+import hashlib
+import json
 import logging
+import os
 import re
 from typing import Any, Dict, List, Optional
+
 
 import openai
 import tqdm
@@ -27,6 +31,7 @@ _LOG = logging.getLogger(__name__)
 # _LOG.debug = _LOG.info
 _MODEL = "gpt-4o-mini"
 _TEMPERATURE = 0.1
+_CACHE_FILE = "openai_cache.json"
 
 # #############################################################################
 # Utility Functions
@@ -147,6 +152,7 @@ def get_completion(
     model: Optional[str] = None,
     report_progress: bool = False,
     print_cost: bool = False,
+    cache_mode: str ="DISABLED",
     **create_kwargs,
 ) -> str:
     """
@@ -158,6 +164,11 @@ def get_completion(
     :param create_kwargs: additional params for the API call
     :param report_progress: whether to report progress running the API
         call
+    :param cache_mode : "DISABLED","CAPTURE", "REPLAY", "FALLBACK" 
+        - "DISABLED" : No caching
+        - "CAPTURE" :  Make API calls and save responses to cache
+        - "REPLAY" : Uses cached responses, fail if not in cache
+        - "FALLBACK" : Use cached responses if available, otherwise makes an API call
     :return: completion text
     """
     model = _MODEL if model is None else model
@@ -488,3 +499,93 @@ def apply_prompt_to_dataframe(
         response_data.extend(processed_response)
     df[response_col] = response_data
     return df
+
+
+
+class OpenAICache:
+    def __init__(self):
+        try:
+            with open(_CACHE_FILE, "r") as f:
+                self.cache = json.load(f)
+        except FileNotFoundError:
+            self.cache = {}
+
+    def hash_key_generator(
+            self,
+            model: str,
+            messages: List[Dict[str, str]],
+            *,
+            temperature: Optional[float] = None,
+            top_p: Optional[float] = None,
+            n: Optional[int] = None,
+            max_completion_tokens: Optional[int] = None,
+            presence_penalty: Optional[float] = None,
+            frequency_penalty: Optional[float] = None,
+            logit_bias: Optional[Dict[int, float]] = None,
+            user: Optional[str] = None,
+            **extra_kwargs: Any,
+    ) -> str:
+        """
+        Generate a hash key for the OpenAI request.
+        """
+        norm_msgs = []
+        for m in messages:
+            norm_msgs.append({
+                "role": m["role"].strip(),
+                "content": " ".join(m["content"].split())
+            })
+
+        key_obj: Dict[str, Any] = {
+            "model": model.strip(),
+            "messages": norm_msgs,
+        }
+
+        for name, val in [
+            ("temperature", temperature),
+            ("top_p", top_p),
+            ("n", n),
+            ("max_completion_tokens", max_completion_tokens),
+            ("presence_penalty", presence_penalty),
+            ("frequency_penalty", frequency_penalty),
+            ("logit_bias", logit_bias),
+            ("user", user),
+        ]:
+            if val is not None:
+                key_obj[name] = val
+
+        for name in sorted(extra_kwargs):
+            key_obj[name] = extra_kwargs[name]
+
+        serialized = json.dumps(
+            key_obj,
+            separators=(",", ":"),   # no spaces
+            sort_keys=True,          # keys in alphabetical order
+            ensure_ascii=False
+        )
+
+        return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+
+    def check_hash_key_in_cache(self, key: str) -> bool:
+        """
+        Check if the hash key is in the cache.
+        """
+        return key in self.cache
+    
+    def save_respone_to_cache(self, key: str, value: str):
+        """
+        Save the cache to the cache directory.
+        """
+        with open(os.path.join(self.cache_dir, key), "w") as f:
+            f.write(value)
+            
+    def load_response_from_cache(self, key: str) -> str:
+        """
+        Load the response from the cache directory.
+        """
+        with open(os.path.join(self.cache_dir, key), "r") as f:
+            return f.read()
+    
+
+        
+            
+    
