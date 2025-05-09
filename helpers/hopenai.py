@@ -11,7 +11,7 @@ import json
 import logging
 import os
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 
 import openai
@@ -83,6 +83,31 @@ def _extract(
 
 _CURRENT_OPENAI_COST = None
 
+def _construct_messages(system_prompt: str, user_prompt: str) ->  List[Dict[str, str]]:
+    
+    """
+    Construct the standard messages payload for the chat API.
+    """
+    return [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
+
+def _call_api_sync(
+    client: OpenAI,
+    messages: List[Dict[str, str]],
+    model: str,
+    **create_kwargs,
+) -> Tuple[str, Any]:
+    """
+    Make a non-streaming API call and return (response, raw_completion).
+    """
+    completion = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        **create_kwargs,
+    )
+    return completion.choices[0].message.content, completion
 
 def start_logging_costs():
     global _CURRENT_OPENAI_COST
@@ -144,6 +169,8 @@ def _calculate_cost(
     return cost
 
 
+
+
 @functools.lru_cache(maxsize=1024)
 def get_completion(
     user_prompt: str,
@@ -171,30 +198,47 @@ def get_completion(
         - "FALLBACK" : Use cached responses if available, otherwise make API call
     :return: completion text
     """
+
     model = _MODEL if model is None else model
     client = OpenAI()
     print("OpenAI API call ... ")
     memento = htimer.dtimer_start(logging.DEBUG, "OpenAI API call")
+
+    messages =  _construct_messages(system_prompt, user_prompt)
+    cache = OpenAICache()
+    hash_key = cache.hash_key_generator(
+        model=model,
+        messages=messages,
+        **create_kwargs,
+    )
+
+    if cache_mode in ("REPLAY", "FALLBACK"):
+        
+        if cache.check_hash_key_in_cache(hash_key):
+            return cache.load_response_from_cache(hash_key)
+        else:
+            if  cache_mode == "REPLAY":
+                raise RuntimeError(f"No cached response for this request parameters!")
+    
+    if cache_mode in ("DISABLED", "CAPTURE", "FALLBACK"):
+        call_api = True
+    else:
+        call_api = False
+    
+    if not call_api:
+        raise ValueError(f"Unsupported cache mode: {cache_mode}")
+
     if not report_progress:
-        completion = client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-            **create_kwargs,
-        )
-        response = completion.choices[0].message.content
+        response = _call_api_sync(client, messages, model, **create_kwargs)
+        completion_obj = None
+
     else:
         # TODO(gp): This is not working. It doesn't show the progress and it
         # doesn't show the cost.
         # Create a stream to show progress.
         completion = client.chat.completions.create(
             model=model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
+            messages=messages,
             stream=True,  # Enable streaming
             **create_kwargs,
         )
@@ -215,6 +259,10 @@ def get_completion(
     cost = _calculate_cost(completion, model, print_cost)
     # Accumulate the cost.
     _accumulate_cost_if_needed(cost)
+    if cache_mode != "DISABLED":
+        cache.save_respone_to_cache(hash_key, response)
+
+        
     return response
 
 
@@ -571,12 +619,12 @@ class OpenAICache:
         """
         return key in self.cache
     
-    def save_respone_to_cache(self, key: str, value: str):
+    def save_respone_to_cache(self, key: str, response: str):
         """
         Save the cache to the cache directory.
         """
         with open(os.path.join(self.cache_dir, key), "w") as f:
-            f.write(value)
+            f.write(response)
             
     def load_response_from_cache(self, key: str) -> str:
         """
