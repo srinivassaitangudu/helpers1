@@ -168,7 +168,7 @@ def get_completion(
         - "DISABLED" : No caching
         - "CAPTURE" :  Make API calls and save responses to cache
         - "REPLAY" : Uses cached responses, fail if not in cache
-        - "FALLBACK" : Use cached responses if available, otherwise makes an API call
+        - "FALLBACK" : Use cached responses if available, otherwise make API call
     :return: completion text
     """
     model = _MODEL if model is None else model
